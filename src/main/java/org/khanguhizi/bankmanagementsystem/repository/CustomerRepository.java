@@ -10,4 +10,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer>{
  Optional<Customer> findByUsername(String username);
  @Query("SELECT c FROM Customer  c WHERE c.email = ?1 OR c.username = ?1")
  Optional<Customer> findByEmailOrUsername(String usernameOrEmail);
+ Optional<Customer> findByNationalId(String nationalId);
+ Optional<Customer> findByPhoneNumber(String phoneNumber);
 }

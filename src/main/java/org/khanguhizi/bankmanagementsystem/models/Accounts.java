@@ -2,6 +2,7 @@ package org.khanguhizi.bankmanagementsystem.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 
 public class Accounts {
     @Id
@@ -20,13 +22,16 @@ public class Accounts {
     private int id;
 
     @Column(updatable = false, nullable = false, unique = true, length = 50)
-    private int accountNumber;
+    private String accountNumber;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private AccountType accountType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
 
     @Column(updatable = false, nullable = false, length = 50)
-    private int balance;
+    private double balance;
 
     @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;
@@ -37,6 +42,7 @@ public class Accounts {
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
     @PreUpdate
     public void preUpdate() {

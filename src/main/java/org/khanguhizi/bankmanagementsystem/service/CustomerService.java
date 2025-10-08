@@ -1,15 +1,17 @@
 package org.khanguhizi.bankmanagementsystem.service;
 
 import org.khanguhizi.bankmanagementsystem.dto.*;
+import org.khanguhizi.bankmanagementsystem.exceptions.DuplicateCredentialsException;
+import org.khanguhizi.bankmanagementsystem.exceptions.InvalidCredentialsException;
 import org.khanguhizi.bankmanagementsystem.models.Customer;
 import org.khanguhizi.bankmanagementsystem.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 
@@ -23,11 +25,19 @@ public class CustomerService {
         //Check if customer exists
         Optional<Customer> existingCustomer = customerRepository.findByEmail(request.getEmail());
         if(existingCustomer.isPresent()){
-            throw new IllegalArgumentException("Email already exists!");
+            throw new DuplicateCredentialsException("Email already exists!");
         }
         Optional<Customer> existingCustomer1 = customerRepository.findByUsername(request.getUsername());
         if(existingCustomer1.isPresent()){
-            throw new IllegalArgumentException("Username already exists!");
+            throw new DuplicateCredentialsException("Username already exists!");
+        }
+        var nationalIdCheck = customerRepository.findByNationalId(request.getNationalId());
+        if(nationalIdCheck.isPresent()){
+            throw new DuplicateCredentialsException("National Id already exists!");
+        }
+        var phoneNumberCheck = customerRepository.findByPhoneNumber(request.getPhoneNumber());
+        if(phoneNumberCheck.isPresent()){
+            throw new DuplicateCredentialsException("Phone Number already exists!");
         }
         Customer customer = Customer.builder()
                 .firstName(request.getFirstName())
@@ -61,13 +71,13 @@ public class CustomerService {
         loginResponse.setEmail(request.getEmail());
         loginResponse.setUsername(request.getUsername());
 
-        if(request.getPassword().equals(customer.getPassword())){
-            throw new IllegalArgumentException("Invalid email or password!");
+        if(!request.getPassword().equals(customer.getPassword())){
+            throw new InvalidCredentialsException("Invalid email or password!");
         }else{
             return ApiResponse.builder()
                     .message("Login Successful!")
                     .data(loginResponse)
-                    .status("success")
+                    .status(String.valueOf(HttpStatus.OK))
                     .build();
         }
 

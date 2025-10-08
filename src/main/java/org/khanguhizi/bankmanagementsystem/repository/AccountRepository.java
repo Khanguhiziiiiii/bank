@@ -4,6 +4,7 @@ import org.khanguhizi.bankmanagementsystem.models.Accounts;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
+import java.util.List;
 public interface AccountRepository extends JpaRepository<Accounts, Integer>{
-    Optional<Accounts> findByAccountNumber(int accountNumber);
+    List<Accounts> findByCustomerId(int customerId);
 }
