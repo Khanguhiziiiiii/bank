@@ -25,7 +25,7 @@ public class TransactionService {
         StringBuilder transactionCode = new StringBuilder();
         for (int i = 0; i < 10; i++){
             int index = (int) (random.nextDouble() * chars.length());
-            transactionCode.append(chars.charAt(index));re
+            transactionCode.append(chars.charAt(index));
         }
         return transactionCode.toString();
     }
