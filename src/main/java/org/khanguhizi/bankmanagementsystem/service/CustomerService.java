@@ -1,10 +1,9 @@
 package org.khanguhizi.bankmanagementsystem.service;
 
 import org.khanguhizi.bankmanagementsystem.dto.*;
-import org.khanguhizi.bankmanagementsystem.exceptions.DuplicateCredentialsException;
-import org.khanguhizi.bankmanagementsystem.exceptions.InvalidCredentialsException;
-import org.khanguhizi.bankmanagementsystem.models.Customer;
-import org.khanguhizi.bankmanagementsystem.repository.CustomerRepository;
+import org.khanguhizi.bankmanagementsystem.exceptions.*;
+import org.khanguhizi.bankmanagementsystem.models.*;
+import org.khanguhizi.bankmanagementsystem.repository.*;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
