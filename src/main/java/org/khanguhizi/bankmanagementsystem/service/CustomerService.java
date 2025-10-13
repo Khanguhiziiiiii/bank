@@ -63,7 +63,7 @@ public class CustomerService {
     public ApiResponse login(LoginRequest request){
         Optional<Customer> existingCustomer = customerRepository.findByEmailOrUsername(request.getUsernameOrEmail());
         if(existingCustomer.isEmpty()){
-            throw new IllegalArgumentException("Invalid email or password!");
+            throw new InvalidCredentialsException("Invalid email or password!");
         }
         Customer customer = existingCustomer.get();
         LoginResponse loginResponse = new LoginResponse();
