@@ -53,4 +53,13 @@ public class GlobalExceptionHandlers {
                 .build();
         return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(InvalidEntryException.class)
+    public ResponseEntity<ApiResponse> handleInvalidEntryException(InvalidEntryException invalidEntryException) {
+        ApiResponse response = ApiResponse.builder()
+                .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                .message(invalidEntryException.getMessage())
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
 }

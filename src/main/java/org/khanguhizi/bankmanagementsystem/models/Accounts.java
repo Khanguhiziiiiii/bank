@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
 public class Accounts {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +31,9 @@ public class Accounts {
 
     @Column(updatable = false, nullable = false, length = 50)
     private double balance;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isOverdraftOptedIn;
 
     @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;

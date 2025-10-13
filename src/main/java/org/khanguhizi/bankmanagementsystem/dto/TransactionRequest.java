@@ -10,4 +10,5 @@ public class TransactionRequest {
     private int targetAccountId;
     private double amount;
     private double balance;
+    private boolean isOverdraftOptedIn;
 }
