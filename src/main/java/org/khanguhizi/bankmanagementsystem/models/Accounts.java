@@ -23,7 +23,7 @@ public class Accounts {
     @Column(updatable = false, nullable = false, unique = true, length = 50)
     private String accountNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private AccountType accountType;
 
     @ManyToOne(fetch = FetchType.LAZY)

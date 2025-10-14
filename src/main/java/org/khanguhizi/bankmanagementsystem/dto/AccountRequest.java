@@ -6,5 +6,5 @@ import lombok.Data;
 public class AccountRequest {
     private int customerId;
     private String accountType;
-
+    private boolean accountTypeId;
 }

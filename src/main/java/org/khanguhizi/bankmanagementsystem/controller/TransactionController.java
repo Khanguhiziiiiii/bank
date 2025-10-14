@@ -25,4 +25,10 @@ public class TransactionController {
         var withdrawRes= transactionService.withdraw(transactionRequest);
         return new ResponseEntity<>(withdrawRes, HttpStatus.OK);
     }
+
+    @PostMapping("/isOverdraftOptedIn")
+    public ResponseEntity<ApiResponse> isOverdraftOptedIn(@RequestBody TransactionRequest transactionRequest){
+        var overdraftRes= transactionService.isOverdraftOptedIn(transactionRequest);
+        return new ResponseEntity<>(overdraftRes, HttpStatus.OK);
+    }
 }

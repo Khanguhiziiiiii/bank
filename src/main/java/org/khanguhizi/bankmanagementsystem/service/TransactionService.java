@@ -30,6 +30,38 @@ public class TransactionService {
         return transactionCode.toString();
     }
 
+    public ApiResponse isOverdraftOptedIn(TransactionRequest request) {
+        Optional<Accounts> existingAccount = accountRepository.findById(request.getAccountId());
+        if (existingAccount.isEmpty()) {
+            throw new NoAccountsFoundException("Account not found!");
+        }
+
+        Accounts account = existingAccount.get();
+
+        Integer accountTypeId = account.getAccountType().getId();
+
+        if (accountTypeId != 1) {
+            throw new InvalidEntryException("Only checking accounts can opt into overdraft.");
+        }
+
+        if (request.isOverdraftOptedIn()) {
+            return ApiResponse.builder()
+                    .message("Already opted into overdraft.")
+                    .data(true)
+                    .status(String.valueOf(HttpStatus.OK))
+                    .build();
+        }
+
+        account.setOverdraftOptedIn(true);
+        accountRepository.save(account);
+
+        return ApiResponse.builder()
+                .message("Successfully opted into overdraft.")
+                .data(true)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
     public ApiResponse deposit(TransactionRequest request) {
         Optional<Accounts> existingAccount = accountRepository.findById(request.getAccountId());
         if (existingAccount.isEmpty()) {
@@ -82,18 +114,25 @@ public class TransactionService {
         Accounts account = existingAccount.get();
         double amount = request.getAmount();
 
-        Integer accountTypeId = request.getAccountTypeId();
+        Integer accountTypeId = account.getAccountType().getId();
+
+        boolean isOverdraftOptedIn = request.isOverdraftOptedIn();
 
         if(amount<0){
             throw new InvalidEntryException("Enter valid amount!");
         }
 
         if (accountTypeId == 1) {
-            if (request.isOverdraftOptedIn()) {
+            log.info("accountypeid: {}" ,accountTypeId);
+            if (isOverdraftOptedIn) {
                 double overdraftLimit = account.getBalance() * 0.10;
                 double maxWithdrawal = account.getBalance() + overdraftLimit;
                 if (amount > maxWithdrawal) {
                     throw new InsufficientFundsException("Insufficient funds! Maximum withdrawal is " + maxWithdrawal);
+                }
+            }else{
+                if (account.getBalance() < amount) {
+                    throw new InsufficientFundsException("Insufficient Funds!");
                 }
             }
         } else {
