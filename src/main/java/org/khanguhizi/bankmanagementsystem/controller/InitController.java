@@ -133,4 +133,56 @@ public class InitController {
 
      */
 
+    /*
+                        CORS ERROR IN SPRING BOOT
+         CORS - Cross Origin Resource Sharing
+              - Occurs when your frontend (on a different origin/domain/port)
+                tries to make a request to your Spring Boot backend, and the backend
+                doesn't explicitly allow that origin.
+
+         How to solve CORS error
+            1. Global CORS Configuration - create a CORS configuration
+            2. CORS at Controller level - add @CrossOrigin to specific controllers or methods
+            3. CORS with Spring Security (if you're using Spring Security) - If you're using
+               Spring Security, it can override global or controller-level CORS settings unless
+               explicitly allowed.
+
+
+               *Add Dependencies (httpclient5)
+
+
+
+               USING @CrossOrigin for specific controllers or methods
+              	@CrossOrigin(origins = "http://localhost:9000")
+                @GetMapping("/greeting")
+                public Greeting greeting(@RequestParam(required = false, defaultValue = "World") String name) {
+                    System.out.println("==== get greeting ====");
+                    return new Greeting(counter.incrementAndGet(), String.format(template, name));
+
+                Explanation
+                This @CrossOrigin annotation enables cross-origin resource sharing only for this specific method.
+                In this example, we allow only http://localhost:9000 to send cross-origin requests.
+                You can also add the @CrossOrigin annotation at the controller class level as well, to enable
+                CORS on all handler methods of this class.
+
+
+
+
+                GLOBAL CORS CONFIGURATION
+                 Create a class that returns WebMvcConfigurer
+                    @Bean
+                    public WebMvcConfigurer corsConfigurer() {
+                        return new WebMvcConfigurer() {
+                            @Override
+                            public void addCorsMappings(CorsRegistry registry) {
+                                registry.addMapping("/greeting-javaconfig").allowedOrigins("http://localhost:9000");
+                            }
+                        };
+                    }
+
+                    Explanation
+
+
+     */
+
 

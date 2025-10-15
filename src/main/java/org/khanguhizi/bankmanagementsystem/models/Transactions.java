@@ -35,6 +35,15 @@ public class Transactions {
     @Column (updatable = false, nullable = false, length = 50)
     private double balance;
 
+    @Column (updatable = false, nullable = false, columnDefinition = "varchar not null default 'N/A'")
+    private double amount;
+
+    @Column (updatable = false, nullable = false, columnDefinition = "varchar not null default 'N/A'")
+    private double fromAccount;
+
+    @Column (updatable = false, nullable = false, columnDefinition = "varchar not null default 'N/A'")
+    private double toAccount;
+
     @PrePersist
     public void prePersist() {
         transactionDate = LocalDateTime.now();

@@ -174,4 +174,39 @@ public class TransactionService {
                 .status(String.valueOf(HttpStatus.OK))
                 .build();
     }
+
+    public ApiResponse checkBalance(BalanceRequest request) {
+        Optional<Accounts> existingAccount = accountRepository.findById(request.getAccountId());
+        if (existingAccount.isEmpty()) {
+            throw new NoAccountsFoundException("Account not found!");
+        }
+
+        Accounts account = existingAccount.get();
+
+        String transactionCode = generateTransactionCode();
+
+        Transactions transaction = Transactions.builder()
+                .transactionCode(transactionCode)
+                .account(account)
+                .balance(account.getBalance())
+                .transactionType("balance")
+                .build();
+
+        transactionRepository.save(transaction);
+
+        Integer accountTypeId = account.getAccountType().getId();
+
+        BalanceResponse balanceResponse = new BalanceResponse();
+        balanceResponse.setAccountNumber(account.getAccountNumber());
+        balanceResponse.setAccountType(accountTypeId);
+        balanceResponse.setTransactionCode(transactionCode);
+        balanceResponse.setBalance(account.getBalance());
+
+        return ApiResponse.builder()
+                .message("Transaction Successful!")
+                .data(balanceResponse)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
 }

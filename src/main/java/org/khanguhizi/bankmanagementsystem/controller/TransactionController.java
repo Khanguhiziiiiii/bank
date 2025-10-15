@@ -5,11 +5,12 @@ import org.khanguhizi.bankmanagementsystem.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
+@CrossOrigin(originPatterns = "*", origins = {"*"})
 @RestController
 public class TransactionController {
     @Autowired
@@ -21,6 +22,7 @@ public class TransactionController {
     }
 
     @PostMapping ("/withdraw")
+    @CrossOrigin("*")
     public ResponseEntity<ApiResponse> withdraw(@RequestBody TransactionRequest transactionRequest){
         var withdrawRes= transactionService.withdraw(transactionRequest);
         return new ResponseEntity<>(withdrawRes, HttpStatus.OK);
@@ -30,5 +32,11 @@ public class TransactionController {
     public ResponseEntity<ApiResponse> isOverdraftOptedIn(@RequestBody TransactionRequest transactionRequest){
         var overdraftRes= transactionService.isOverdraftOptedIn(transactionRequest);
         return new ResponseEntity<>(overdraftRes, HttpStatus.OK);
+    }
+
+    @PostMapping("/checkBalance")
+    public ResponseEntity<ApiResponse> checkBalance(@RequestBody BalanceRequest balanceRequest){
+        var checkBalanceRes= transactionService.checkBalance(balanceRequest);
+        return new ResponseEntity<>(checkBalanceRes, HttpStatus.OK);
     }
 }
