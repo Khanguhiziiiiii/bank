@@ -39,4 +39,10 @@ public class TransactionController {
         var checkBalanceRes= transactionService.checkBalance(balanceRequest);
         return new ResponseEntity<>(checkBalanceRes, HttpStatus.OK);
     }
+
+    @PostMapping ("/transferFunds")
+    public ResponseEntity<ApiResponse> transferFunds(@RequestBody TransferFundsRequest transferFundsRequest){
+        var transferFundsRes= transactionService.transferFunds(transferFundsRequest);
+        return new ResponseEntity<>(transferFundsRes, HttpStatus.OK);
+    }
 }

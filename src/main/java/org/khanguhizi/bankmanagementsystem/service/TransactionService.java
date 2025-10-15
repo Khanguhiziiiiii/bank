@@ -71,7 +71,7 @@ public class TransactionService {
         Accounts account = existingAccount.get();
         double amount = request.getAmount();
 
-        if(amount<0){
+        if(amount<=0){
             throw new InvalidEntryException("Enter valid amount!");
         }
 
@@ -118,7 +118,7 @@ public class TransactionService {
 
         boolean isOverdraftOptedIn = request.isOverdraftOptedIn();
 
-        if(amount<0){
+        if(amount<=0){
             throw new InvalidEntryException("Enter valid amount!");
         }
 
@@ -126,9 +126,9 @@ public class TransactionService {
             log.info("accountypeid: {}" ,accountTypeId);
             if (isOverdraftOptedIn) {
                 double overdraftLimit = account.getBalance() * 0.10;
-                double maxWithdrawal = account.getBalance() + overdraftLimit;
-                if (amount > maxWithdrawal) {
-                    throw new InsufficientFundsException("Insufficient funds! Maximum withdrawal is " + maxWithdrawal);
+                double maxAllowedWithdrawal = account.getBalance() + overdraftLimit;
+                if (amount > maxAllowedWithdrawal) {
+                    throw new InsufficientFundsException("Insufficient funds! Maximum withdrawal is " + maxAllowedWithdrawal);
                 }
             }else{
                 if (account.getBalance() < amount) {
@@ -142,9 +142,9 @@ public class TransactionService {
         }
 
         if (accountTypeId == 3) {
-            double maxAllowed = account.getBalance() * 0.10;
-            if (amount > maxAllowed) {
-                throw new InvalidEntryException("Amount exceeds what is allowed! Maximum deposit is " + maxAllowed);
+            double maxAllowedWithdrawal = account.getBalance() * 0.10;
+            if (amount > maxAllowedWithdrawal) {
+                throw new InvalidEntryException("Amount exceeds what is allowed! Maximum deposit is " + maxAllowedWithdrawal);
             }
         }
 
@@ -205,6 +205,71 @@ public class TransactionService {
         return ApiResponse.builder()
                 .message("Transaction Successful!")
                 .data(balanceResponse)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
+    public ApiResponse transferFunds(TransferFundsRequest request){
+        Optional<Accounts> existingFromAccount = accountRepository.findByAccountNumber(request.getAccountNumber());
+        if(existingFromAccount.isEmpty()){
+            throw new NoAccountsFoundException("Sender Account not found!");
+        }
+        Accounts fromAccount = existingFromAccount.get();
+
+        Optional<Accounts> existingToAccount = accountRepository.findByAccountNumber(request.getAccountNumber());
+        if(existingToAccount.isEmpty()){
+            throw new NoAccountsFoundException("Recipient Account not found!");
+        }
+        Accounts toAccount = existingToAccount.get();
+
+        double amount = request.getAmount();
+
+        if (request.getAmount() <= 0){
+            throw new InvalidEntryException("Enter valid amount!");
+        }
+
+        Integer accountTypeId = fromAccount.getAccountType().getId();
+        boolean isOverdraftOptedIn = fromAccount.isOverdraftOptedIn();
+
+        double maxAllowedTransfer = fromAccount.getBalance();
+        if (accountTypeId == 1 && isOverdraftOptedIn) {
+            maxAllowedTransfer += fromAccount.getBalance() * 0.10;
+        }
+
+        if (accountTypeId == 3){
+            maxAllowedTransfer = fromAccount.getBalance() * 0.10;
+        }
+
+        if (amount<maxAllowedTransfer){
+            throw new InsufficientFundsException("Insufficient Funds!");
+        }
+
+        fromAccount.setBalance(fromAccount.getBalance() - amount);
+        toAccount.setBalance(toAccount.getBalance() + amount);
+        accountRepository.save(fromAccount);
+        accountRepository.save(toAccount);
+
+        String transactionCode = generateTransactionCode();
+
+        Transactions transactions = Transactions.builder()
+                .transactionCode(transactionCode)
+                .account(fromAccount)
+                .balance(fromAccount.getBalance())
+                .transactionType("transfer")
+                .account(toAccount)
+                .balance(toAccount.getBalance())
+                .build();
+
+        TransferFundsResponse  transferFundsResponse = new TransferFundsResponse();
+        transferFundsResponse.setTransactionCode(transactionCode);
+        transferFundsResponse.setFromAccount(fromAccount.getAccountNumber());
+        transferFundsResponse.setBalance(fromAccount.getBalance());
+        transferFundsResponse.setToAccount(toAccount.getAccountNumber());
+        transferFundsResponse.setBalance(toAccount.getBalance());
+
+        return ApiResponse.builder()
+                .message("Transaction Successful!")
+                .data(transferFundsResponse)
                 .status(String.valueOf(HttpStatus.OK))
                 .build();
     }

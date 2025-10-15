@@ -39,10 +39,10 @@ public class Transactions {
     private double amount;
 
     @Column (updatable = false, nullable = false, columnDefinition = "varchar not null default 'N/A'")
-    private double fromAccount;
+    private String fromAccount;
 
     @Column (updatable = false, nullable = false, columnDefinition = "varchar not null default 'N/A'")
-    private double toAccount;
+    private String toAccount;
 
     @PrePersist
     public void prePersist() {
