@@ -255,6 +255,17 @@ public class InitController {
         @EnableWebSecurity	Enables Spring Security config
         @EnableGlobalMethodSecurity	Enables method-level security
         @WithMockUser	Used in tests to simulate logged-in user
+
+
+        UserDetailsService: this is the main service which retrieves security
+                            information about users. As we defined our custom bean,
+                            we don’t see anymore in the log the default password provided
+                            by Spring, as we are now providing it.
+        UserDetails class: this is the interface which Spring uses to process user’s
+                           security related information, like the username or its password
+                           (take a look into the class for more information). We are using
+                           the standard User class (also provided by Spring) as its
+                           implementation.
      */
 
 

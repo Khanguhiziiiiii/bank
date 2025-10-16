@@ -51,7 +51,12 @@ public class CustomerService {
         customerRepository.save(customer);
 
        RegisterResponse registerResponse = new RegisterResponse();
+       registerResponse.setFirstName(request.getFirstName());
+       registerResponse.setLastName(request.getLastName());
        registerResponse.setEmail(request.getEmail());
+       registerResponse.setPhoneNumber(request.getPhoneNumber());
+       registerResponse.setNationalId(request.getNationalId());
+       registerResponse.setDateOfBirth(request.getDateOfBirth());
        registerResponse.setUsername(request.getUsername());
        return ApiResponse.builder()
                .message("Successfully registered!")
@@ -72,8 +77,13 @@ public class CustomerService {
         Customer customerId = customer;
 
         LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setEmail(request.getEmail());
-        loginResponse.setUsername(request.getUsername());
+        loginResponse.setFirstName(customer.getFirstName());
+        loginResponse.setLastName(customer.getLastName());
+        loginResponse.setEmail(customer.getEmail());
+        loginResponse.setPhoneNumber(customer.getPhoneNumber());
+        loginResponse.setNationalId(customer.getNationalId());
+        loginResponse.setDateOfBirth(customer.getDateOfBirth());
+        loginResponse.setUsername(customer.getUsername());
         loginResponse.setCustomerId(customerId.getId());
 
         if(!request.getPassword().equals(customer.getPassword())){
