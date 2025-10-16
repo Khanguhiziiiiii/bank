@@ -29,7 +29,7 @@ public class Accounts {
     @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
 
-    @Column(updatable = false, nullable = false, length = 50)
+    @Column(nullable = false, length = 50)
     private double balance;
 
     @Column(nullable = false, columnDefinition = "boolean default false")

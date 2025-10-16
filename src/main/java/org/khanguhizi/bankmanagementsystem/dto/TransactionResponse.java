@@ -12,4 +12,7 @@ public class TransactionResponse {
     private int accountTypeId;
     private String transactionCode;
     private double balance;
+    private double amount;
+    private String fromAccount;
+    private String toAccount;
 }

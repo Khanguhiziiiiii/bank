@@ -65,10 +65,16 @@ public class CustomerService {
         if(existingCustomer.isEmpty()){
             throw new InvalidCredentialsException("Invalid email or password!");
         }
+
+
         Customer customer = existingCustomer.get();
+
+        Customer customerId = customer;
+
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setEmail(request.getEmail());
         loginResponse.setUsername(request.getUsername());
+        loginResponse.setCustomerId(customerId.getId());
 
         if(!request.getPassword().equals(customer.getPassword())){
             throw new InvalidCredentialsException("Invalid email or password!");

@@ -75,9 +75,7 @@ public class TransactionService {
             throw new InvalidEntryException("Enter valid amount!");
         }
 
-        account.setBalance(100);
-        log.info("After updating the account balance  {}", account);
-
+        account.setBalance(account.getBalance()+amount);
         accountRepository.save(account);
 
 
@@ -87,8 +85,11 @@ public class TransactionService {
         Transactions transaction = Transactions.builder()
                 .transactionCode(transactionCode)
                 .account(account)
+                .amount(amount)
                 .balance(account.getBalance())
                 .transactionType("deposit")
+                .fromAccount("N/A")
+                .toAccount("N/A")
                 .build();
 
         transactionRepository.save(transaction);
@@ -97,6 +98,8 @@ public class TransactionService {
         TransactionResponse transactionResponse = new TransactionResponse();
         transactionResponse.setTransactionCode(transactionCode);
         transactionResponse.setBalance(account.getBalance());
+        transactionResponse.setAmount(transaction.getAmount());
+
 
         return ApiResponse.builder()
                 .message("Transaction Successful!")
@@ -157,8 +160,11 @@ public class TransactionService {
         Transactions transaction = Transactions.builder()
                 .transactionCode(transactionCode)
                 .account(account)
+                .amount(amount)
                 .balance(account.getBalance())
                 .transactionType("withdrawal")
+                .fromAccount("N/A")
+                .toAccount("N/A")
                 .build();
 
         transactionRepository.save(transaction);
@@ -167,6 +173,7 @@ public class TransactionService {
         TransactionResponse transactionResponse = new TransactionResponse();
         transactionResponse.setTransactionCode(transactionCode);
         transactionResponse.setBalance(account.getBalance());
+        transactionResponse.setAmount(transaction.getAmount());
 
         return ApiResponse.builder()
                 .message("Transaction Successful!")
@@ -185,6 +192,8 @@ public class TransactionService {
 
         String transactionCode = generateTransactionCode();
 
+        Integer accountTypeId = account.getAccountType().getId();
+
         Transactions transaction = Transactions.builder()
                 .transactionCode(transactionCode)
                 .account(account)
@@ -194,7 +203,6 @@ public class TransactionService {
 
         transactionRepository.save(transaction);
 
-        Integer accountTypeId = account.getAccountType().getId();
 
         BalanceResponse balanceResponse = new BalanceResponse();
         balanceResponse.setAccountNumber(account.getAccountNumber());
@@ -210,13 +218,13 @@ public class TransactionService {
     }
 
     public ApiResponse transferFunds(TransferFundsRequest request){
-        Optional<Accounts> existingFromAccount = accountRepository.findByAccountNumber(request.getAccountNumber());
+        Optional<Accounts> existingFromAccount = accountRepository.findByAccountNumber(request.getFromAccount());
         if(existingFromAccount.isEmpty()){
             throw new NoAccountsFoundException("Sender Account not found!");
         }
         Accounts fromAccount = existingFromAccount.get();
 
-        Optional<Accounts> existingToAccount = accountRepository.findByAccountNumber(request.getAccountNumber());
+        Optional<Accounts> existingToAccount = accountRepository.findByAccountNumber(request.getToAccount());
         if(existingToAccount.isEmpty()){
             throw new NoAccountsFoundException("Recipient Account not found!");
         }
@@ -240,7 +248,7 @@ public class TransactionService {
             maxAllowedTransfer = fromAccount.getBalance() * 0.10;
         }
 
-        if (amount<maxAllowedTransfer){
+        if (amount>maxAllowedTransfer){
             throw new InsufficientFundsException("Insufficient Funds!");
         }
 
@@ -251,14 +259,16 @@ public class TransactionService {
 
         String transactionCode = generateTransactionCode();
 
-        Transactions transactions = Transactions.builder()
+        Transactions transaction = Transactions.builder()
                 .transactionCode(transactionCode)
-                .account(fromAccount)
+                //.fromAccount(transaction.getFromAccount())
                 .balance(fromAccount.getBalance())
                 .transactionType("transfer")
-                .account(toAccount)
+                //.toAccount(transaction.getToAccount())
                 .balance(toAccount.getBalance())
                 .build();
+
+        transactionRepository.save(transaction);
 
         TransferFundsResponse  transferFundsResponse = new TransferFundsResponse();
         transferFundsResponse.setTransactionCode(transactionCode);

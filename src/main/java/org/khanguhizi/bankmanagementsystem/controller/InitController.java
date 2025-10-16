@@ -185,4 +185,76 @@ public class InitController {
 
      */
 
+    /*
+                    SECURITY IN SPRINGBOOT
+        What is Spring Security?
+            Spring Security is a framework that provides:
+                Authentication: Who are you?
+                Authorization: Are you allowed to do this?
+                Protection against common vulnerabilities (e.g., CSRF, session fixation, clickjacking)
+                Integration with OAuth2, JWT, LDAP, etc.
+
+        Add Spring Security dependencies
+
+        @Configuration
+        @EnableWebSecurity
+        public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+            @Override
+            protected void configure(HttpSecurity http) throws Exception {
+                http
+                    .authorizeRequests()
+                    .antMatchers("/public").permitAll()
+                    .anyRequest().authenticated()
+                    .and()
+                    .httpBasic(); // Basic authentication
+            }
+
+            @Override
+            protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+                auth
+                    .inMemoryAuthentication()
+                    .withUser("user")
+                    .password(passwordEncoder().encode("password"))
+                    .roles("USER");
+            }
+
+            @Bean
+            public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+            }
+        }
+
+
+                JWT (JSON Web Token) Authentication
+        JWT is commonly used in stateless APIs:
+            Clients authenticate and receive a token
+            Token is sent with each request in the Authorization header
+            The server verifies the token without keeping session state
+        Example JWT flow involves:
+            AuthenticationFilter: to login and generate JWT
+            AuthorizationFilter: to validate JWT on each request
+
+
+                Method-Level Security
+        Use annotations like:
+            @PreAuthorize("hasRole('ADMIN')")
+            @Secured("ROLE_USER")
+            @RolesAllowed("ADMIN")
+
+
+                Security Best Practices
+        Use BCrypt for password encoding
+        Enable HTTPS
+        Protect against CSRF (enabled by default for web apps)
+        Limit CORS as needed
+        Use stateless sessions for REST APIs
+        Avoid exposing sensitive data in errors
+
+                Annotations
+        @EnableWebSecurity	Enables Spring Security config
+        @EnableGlobalMethodSecurity	Enables method-level security
+        @WithMockUser	Used in tests to simulate logged-in user
+     */
+
 
