@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CustomerService {
     private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     public ApiResponse register(RegisterRequest request){
@@ -46,7 +48,7 @@ public class CustomerService {
                 .nationalId(request.getNationalId())
                 .dateOfBirth(request.getDateOfBirth())
                 .username(request.getUsername())
-                .password(request.getPassword())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .build();
         customerRepository.save(customer);
 
@@ -86,7 +88,7 @@ public class CustomerService {
         loginResponse.setUsername(customer.getUsername());
         loginResponse.setCustomerId(customerId.getId());
 
-        if(!request.getPassword().equals(customer.getPassword())){
+        if (!passwordEncoder.matches(request.getPassword(), customer.getPassword())) {
             throw new InvalidCredentialsException("Invalid email or password!");
         }else{
             return ApiResponse.builder()
