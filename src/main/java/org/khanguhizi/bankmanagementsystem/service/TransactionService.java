@@ -126,8 +126,8 @@ public class TransactionService {
         }
 
         if (accountTypeId == 1) {
-            log.info("accountypeid: {}" ,accountTypeId);
-            if (isOverdraftOptedIn) {
+            //log.info("accountypeid: {}" ,accountTypeId);
+            if (isOverdraftOptedIn == true) {
                 double overdraftLimit = account.getBalance() * 0.10;
                 double maxAllowedWithdrawal = account.getBalance() + overdraftLimit;
                 if (amount > maxAllowedWithdrawal) {
