@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.khanguhizi.bankmanagementsystem.models.CustomUserDetails;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +20,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         Customer customer = customerRepository.findByEmailOrUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        return User.builder()
-                .username(customer.getUsername())
-                .password(customer.getPassword())
-                .roles("USER")
-                .build();
+        return new CustomUserDetails(customer);
     }
 }
