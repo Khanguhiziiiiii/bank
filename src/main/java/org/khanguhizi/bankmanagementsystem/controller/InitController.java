@@ -268,4 +268,41 @@ public class InitController {
                            implementation.
      */
 
+    /*
+                AUTHENTICATION METHODS
+            1. Basic Authentication
+            2. Form-Based Authentication
+            3. JWT (JSON Web Token) Authentication
+            4. OAuth2 / OpenID Connect (OIDC)
+            5. LDAP Authentication
+            6. X.509 Certificate Authentication
+            7. SAML 2.0 Authentication
+            8. Session-Based Authentication
+            9. Token-Based Authentication
+           10. Multi-Factor Authentication (MFA)
+
+                    2. Form-Based Authentication
+            User logs in through an HTML form instead of the browser's Basic Auth Popup
+                Credentials are submitted through the form
+                Spring Security validates them
+                On Success, it creates a HTTP session and stores authentication info
+
+                    3. JWT (JSON Web Token) Authentication
+            The server issues a signed token after login, the client includes it in subsequent requests
+                User logs in
+                    Sever validates credentials
+                    Server issues a JWT
+                 Client stores JWT (Usually in localStorage or Cookies)
+                 Client sends JWT in the Authorization header
+                 Server validates JWT signature for each request
+
+                 4. OAuth2 / OpenID Connect (OIDC)
+             Allows login via third-party providers eg Google, GitHub etc
+                User is redirected to the provider (eg Google) for authentication
+                Provider sends an access token (and optionally an ID Token)
+                Spring Security uses that token to authenticate the user
+
+                5. LDAP Authentication
+     */
+
 
