@@ -9,6 +9,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -48,9 +49,19 @@ public class SecurityConfig {
                         .requestMatchers("/register", "/login").permitAll()
                         .anyRequest().authenticated()
                 )
-                .httpBasic(httpBasic -> {
+                //.httpBasic(httpBasic -> {
+                //});
+                /*
+                this disables the basic auth entry point thus
+                disabling the basic auth pop-up that prompts you
+                for username and password
+                */
 
-                });
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                /*
+
+                 */
+
 
         return http.build();
     }

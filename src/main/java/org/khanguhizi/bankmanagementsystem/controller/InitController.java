@@ -275,11 +275,13 @@ public class InitController {
             3. JWT (JSON Web Token) Authentication
             4. OAuth2 / OpenID Connect (OIDC)
             5. LDAP Authentication
-            6. X.509 Certificate Authentication
-            7. SAML 2.0 Authentication
-            8. Session-Based Authentication
-            9. Token-Based Authentication
-           10. Multi-Factor Authentication (MFA)
+            6. Database Authentication (CustomUserDetailsService)
+            7. X.509 Certificate Authentication
+            8. SAML 2.0 Authentication
+            9. API Key Authentication
+           10. Session-Based Authentication
+           11. Token-Based Authentication
+           12. Multi-Factor Authentication (MFA)
 
                     2. Form-Based Authentication
             User logs in through an HTML form instead of the browser's Basic Auth Popup
@@ -302,7 +304,47 @@ public class InitController {
                 Provider sends an access token (and optionally an ID Token)
                 Spring Security uses that token to authenticate the user
 
-                5. LDAP Authentication
+                5. LDAP Authentication (Lightweight Directory Access Protocol)
+            LDAP Authentication is used to validate users stored in a directory service like Active Directory in organizations
+                The app connects to LDAP server
+                It searches for the name in the directory
+                It verifies the password with LDAP
+                If valid, the user gains access
+
+                6. Database Authentication (CustomUserDetailsService)
+            This is where you manage users in your own database
+            You create a table for users and implement your own logic to validate them
+                You create a user entity and repository
+                You implement UserDetailsService to fetch user data from the DB
+                Spring Security uses this service for authentication
+
+                7. X.509 Certificate Authentication
+
+
+                8. SAML 2.0 Authentication
+
+
+                9. API Key Authentication
+             An API Key is a static, pre-generated secret string (like a password for your application)
+             It is created manually or stored in a database, then shared with a trusted client (another system or developer)
+                The client sends the API Key in each request header or query parameter
+                The server checks if the key is valid (matches one in the database or configuration)
+                If valid - access is granted
+                If invalid - request is rejected
+
+               10. Session-Based Authentication
+             After a successful login, Spring stores authentication in HTTP session
+
+               11. Token-Based Authentication
+             A token is a temporary digital credential issued after a successful login
+             It represents a specific authenticated user and usually contains user info (claims)
+                User logs in with username/password
+                Server validates credentials and issues a token
+                The token contains encoded user info (eg username, roles)
+                Client sends the token with each request
+                The server validates the token's signature and expiry before processing
+
+               12. Multi-Factor Authentication (MFA)
      */
 
 
