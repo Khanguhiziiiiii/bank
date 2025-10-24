@@ -1,3 +1,4 @@
+/*
 package org.khanguhizi.bankmanagementsystem.config;
 
 
@@ -45,6 +46,7 @@ public class SecurityConfig {
                         Basic Auth and JWT are not vulnerable to CSRF unless you start using cookies for authentication —
                         and you’re not.
                     */
+/*
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/register", "/login").permitAll()
                         .anyRequest().authenticated()
@@ -56,13 +58,23 @@ public class SecurityConfig {
                 disabling the basic auth pop-up that prompts you
                 for username and password
                 */
-
+/*
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
                 /*
-
+                SessionCreationPolicy:
+                    ALWAYS
+                        Spring Security will always create a session, even if one doesn’t exist.
+                    IF_REQUIRED
+                        Spring Security will create a session only if it’s required for authentication.
+                    NEVER
+                        Spring Security will never create a session,
+                        but will use one if it already exists.
+                    STATELESS
+                        Spring Security will never create or use an HTTP session.
+                        Every request must be independently authenticated.
                  */
 
-
+/*
         return http.build();
     }
 
@@ -90,4 +102,10 @@ public class SecurityConfig {
         PasswordEncoder	Hashes and verifies passwords
         AuthenticationManager	Orchestrates the authentication process
      */
+/*
+
 }
+
+*/
+
+
