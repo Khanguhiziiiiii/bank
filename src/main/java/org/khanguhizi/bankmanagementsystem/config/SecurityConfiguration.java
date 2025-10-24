@@ -29,7 +29,7 @@ public class SecurityConfiguration {
     private final CustomUserDetailsService userDetailsService;
 
     public SecurityConfiguration(CustomUserDetailsService userDetailsService) {
-//        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+//      this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.userDetailsService = userDetailsService;
     }
 

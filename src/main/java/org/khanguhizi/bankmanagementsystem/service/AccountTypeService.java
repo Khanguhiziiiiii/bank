@@ -8,6 +8,9 @@ import org.khanguhizi.bankmanagementsystem.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.AccountNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,6 +37,22 @@ public class AccountTypeService {
         return ApiResponse.builder()
                 .message("Account Type Created Successfully!")
                 .data(accountTypeResponse)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
+    public ApiResponse fetchAccountType(AccountTypeRequest request) {
+        Optional<AccountType> accountType = accountTypeRepository.findByAccountType(request.getAccountType());
+        if (accountType.isEmpty()) {
+            throw new NoAccountsFoundException("Account Type Not Found!");
+        }
+
+        AccountTypeResponse response = new AccountTypeResponse();
+        response.setAccountType(accountType.get().getAccountType());
+
+        return ApiResponse.builder()
+                .message("Account Type Fetched Successfully!")
+                .data(response)
                 .status(String.valueOf(HttpStatus.OK))
                 .build();
     }
