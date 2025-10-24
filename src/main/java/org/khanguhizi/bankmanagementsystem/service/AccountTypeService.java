@@ -42,7 +42,7 @@ public class AccountTypeService {
     }
 
     public ApiResponse fetchAccountType(AccountTypeRequest request) {
-        Optional<AccountType> accountType = accountTypeRepository.findByAccountType(request.getAccountType());
+        Optional<AccountType> accountType = accountTypeRepository.findById(request.getAccountTypeId());
         if (accountType.isEmpty()) {
             throw new NoAccountsFoundException("Account Type Not Found!");
         }
