@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class CustomerService {
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JWTService jwtService;
 
 
     public ApiResponse register(RegisterRequest request){
@@ -87,6 +89,11 @@ public class CustomerService {
         loginResponse.setDateOfBirth(customer.getDateOfBirth());
         loginResponse.setUsername(customer.getUsername());
         loginResponse.setCustomerId(customerId.getId());
+        loginResponse.setToken(jwtService.generateToken(new org.springframework.security.core.userdetails.User(
+                customer.getUsername(),
+                customer.getPassword(),
+                new ArrayList<>()
+        )));
 
         if (!passwordEncoder.matches(request.getPassword(), customer.getPassword())) {
             throw new InvalidCredentialsException("Invalid email or password!");

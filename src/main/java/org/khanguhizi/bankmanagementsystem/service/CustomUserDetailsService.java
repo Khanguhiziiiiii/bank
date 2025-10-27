@@ -3,7 +3,6 @@ package org.khanguhizi.bankmanagementsystem.service;
 import lombok.RequiredArgsConstructor;
 import org.khanguhizi.bankmanagementsystem.models.Customer;
 import org.khanguhizi.bankmanagementsystem.repository.CustomerRepository;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

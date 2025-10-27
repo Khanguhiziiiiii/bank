@@ -18,4 +18,5 @@ public class LoginResponse {
     private String nationalId;
     private LocalDate dateOfBirth;
     private String username;
+    private String token;
 }
