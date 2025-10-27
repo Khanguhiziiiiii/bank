@@ -1,4 +1,4 @@
-package org.khanguhizi.bankmanagementsystem.config;
+/*package org.khanguhizi.bankmanagementsystem.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,3 +29,5 @@ public interface JWTAuthenticationFilter extends OncePerRequestFilter {
 
     }
 }
+
+ */
