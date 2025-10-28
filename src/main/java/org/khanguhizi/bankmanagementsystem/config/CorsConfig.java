@@ -1,41 +1,28 @@
 package org.khanguhizi.bankmanagementsystem.config;
 
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.NonNull;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
-
 public class CorsConfig {
 
     @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(false);
+        corsConfiguration.addAllowedOriginPattern("*");
+        corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addExposedHeader("Authorization");
+        corsConfiguration.addExposedHeader("Content-Type");
+        corsConfiguration.setMaxAge(3600L);
 
-    public WebMvcConfigurer corsConfigurer() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
 
-        return new WebMvcConfigurer() {
-
-            @Override
-
-            public void addCorsMappings(@NonNull CorsRegistry registry) {
-
-                registry.addMapping("/**")
-
-                        .allowedOrigins("*")
-
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-
-                        .allowedHeaders("*")
-
-
-                        .maxAge(3600);
-
-            }
-
-        };
-
+        return new CorsFilter(source);
     }
-
 }
- 
