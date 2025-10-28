@@ -44,4 +44,8 @@ public class Customer {
 
     @Column(updatable = false, nullable = false, length = 255)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR default 'USER'")
+    private Role role;
 }

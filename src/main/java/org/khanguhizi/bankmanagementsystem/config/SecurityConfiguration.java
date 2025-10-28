@@ -37,20 +37,24 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+//
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/register").permitAll()
-                        .anyRequest().authenticated()
+                                //.anyRequest().authenticated()
+                        .requestMatchers("/createAccountType").hasRole("ADMIN")
+                        .anyRequest().hasAnyRole("USER", "ADMIN")
                 ) //all other requests require jwt authentication
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
+//                .formLogin(AbstractHttpConfigurer::disable)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ) //make sessions stateless
 
                 .authenticationProvider(authenticationProvider())
 
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
                 // Add the custom JWT filter before Spring’s default authentication filter
 
                 .build();// Build and return the SecurityFilterChain

@@ -1,12 +1,13 @@
 package org.khanguhizi.bankmanagementsystem.models;
 
-import org.khanguhizi.bankmanagementsystem.models.Customer;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import org.springframework.security.core.GrantedAuthority;  //used to specify Roles
 import org.springframework.security.core.authority.SimpleGrantedAuthority; //implementation of GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 public class CustomUserDetails implements UserDetails {
 
@@ -14,11 +15,6 @@ public class CustomUserDetails implements UserDetails {
 
     public CustomUserDetails(Customer customer) {
         this.customer = customer;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
@@ -34,6 +30,22 @@ public class CustomUserDetails implements UserDetails {
         //Returns the username used to identify the user.
         //This is the unique identifier that the login form uses.
     }
+
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + customer.getRole()));
+    }
+
+        /*
+            tells Spring what permissions (roles) the user has.
+            SimpleGrantedAuthority is a wrapper class that Spring uses to represent a role.
+            "ROLE_" + role.name() ensures that your roles follow the Spring convention:
+            role.name() → "USER" or "ADMIN"
+            "ROLE_" + role.name() → "ROLE_USER" or "ROLE_ADMIN"
+            This is necessary because Spring Security internally expects role names to start with "ROLE_".
+         */
 
     @Override
     public boolean isAccountNonExpired() {

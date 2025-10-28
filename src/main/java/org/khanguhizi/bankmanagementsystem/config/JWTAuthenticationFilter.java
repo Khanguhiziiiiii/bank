@@ -52,6 +52,16 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;
+        }else{
+            jwt = authHeader.substring(7);
+            try {
+                username = jwtService.extractUsername(jwt);
+            } catch (Exception e) {
+                chain.doFilter(request, response);
+                return;
+                // Token invalid or expired
+                // Log if needed, but do not stop the chain
+            }
         }
 
         /*
@@ -63,8 +73,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
          */
 
 
-        jwt = authHeader.substring(7);
-        username = jwtService.extractUsername(jwt);
+        //jwt = authHeader.substring(7);
+        //username = jwtService.extractUsername(jwt);
 
         /*
             Removes the "Bearer " prefix (which has 7 characters) to get the actual token

@@ -49,6 +49,7 @@ public class CustomerService {
                 .phoneNumber(request.getPhoneNumber())
                 .nationalId(request.getNationalId())
                 .dateOfBirth(request.getDateOfBirth())
+                .role(Role.USER)
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
