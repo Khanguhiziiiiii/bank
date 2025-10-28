@@ -18,7 +18,7 @@ public class AccountTypeController {
     @PostMapping ("/createAccountType")
     public ResponseEntity <ApiResponse> createAccountType(@RequestBody AccountTypeRequest accountTypeRequest) {
         var createAccountTypeRes = accountTypeService.accountType(accountTypeRequest);
-        return new ResponseEntity<>(createAccountTypeRes, HttpStatus.OK);
+        return new ResponseEntity<>(createAccountTypeRes, HttpStatus.CREATED);
     }
 
     @PostMapping("/fetchAccountType")

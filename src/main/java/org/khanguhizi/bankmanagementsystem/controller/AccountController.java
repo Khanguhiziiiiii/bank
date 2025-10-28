@@ -19,7 +19,7 @@ public class AccountController {
     @PostMapping ("/createAccount")
     public ResponseEntity<ApiResponse> createAccount(@RequestBody AccountRequest accountRequest){
         var createAccountRes = accountService.account(accountRequest);
-        return new ResponseEntity<>(createAccountRes, HttpStatus.OK);
+        return new ResponseEntity<>(createAccountRes, HttpStatus.CREATED);
     }
 
     @PostMapping ("/fetchAccounts")
