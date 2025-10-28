@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(originPatterns = "*", origins = {"*"}, allowedHeaders = {"*"})
+//@CrossOrigin(originPatterns = "*", origins = {"*"}, allowedHeaders = {"*"})
 @RestController
 public class AccountTypeController {
     @Autowired
