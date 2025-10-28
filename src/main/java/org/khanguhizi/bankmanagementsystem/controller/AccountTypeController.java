@@ -2,8 +2,6 @@ package org.khanguhizi.bankmanagementsystem.controller;
 
 import org.khanguhizi.bankmanagementsystem.dto.AccountTypeRequest;
 import org.khanguhizi.bankmanagementsystem.dto.ApiResponse;
-import org.khanguhizi.bankmanagementsystem.models.AccountType;
-import org.khanguhizi.bankmanagementsystem.service.AccountService;
 import org.khanguhizi.bankmanagementsystem.service.AccountTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
