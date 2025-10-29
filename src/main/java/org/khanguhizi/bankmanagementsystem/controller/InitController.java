@@ -347,4 +347,50 @@ public class InitController {
                12. Multi-Factor Authentication (MFA)
      */
 
+        /*
+                            SWAGGER
+             Swagger is a set of tools and specifications used to design, build, document, and consume RESTful APIs.
+             It’s now officially part of the OpenAPI Specification (OAS), which is the industry standard for describing
+             APIs in a machine-readable way.
+
+                 In simple terms:
+             Swagger provides a standard format (usually a YAML or JSON file) that describes your API —
+             what endpoints it has, what parameters they take, what responses they return, etc.
+             For example, a Swagger (OpenAPI) document might describe an endpoint like this:
+
+                        paths:
+                          /users:
+                            get:
+                              summary: Get all users
+                              responses:
+                                '200':
+                                  description: A list of users
+
+                Key Components of Swagger:
+        Swagger/OpenAPI Specification
+            A language-agnostic definition format for REST APIs.
+            Example file: swagger.yaml or openapi.json.
+        Swagger UI
+            A web-based interface that automatically generates interactive API documentation from your Swagger file.
+            You can test endpoints directly in the browser.
+        Swagger Editor
+            An online or local editor for writing and validating Swagger/OpenAPI files.
+        Swagger Codegen / OpenAPI Generator
+            Tools that can automatically generate client SDKs, server stubs, or API documentation from your Swagger spec.
+
+                Why Swagger is Useful
+        Documentation: Automatically generates interactive docs for developers.
+        Testing: Try out API endpoints directly from the browser.
+        Consistency: Ensures all teams work from the same API contract.
+        Automation: Generates server and client code automatically.
+
+               Swagger vs OpenAPI
+        Swagger was the original specification created by SmartBear.
+        It was later donated to the OpenAPI Initiative (under the Linux Foundation).
+        The current standard is called OpenAPI Specification (OAS) — Swagger tools still support it.
+
+                In short:
+        Swagger = Tools + Format for defining, testing, and documenting REST APIs (now based on the OpenAPI standard).
+         */
+
 
