@@ -46,9 +46,19 @@ public class SecurityConfiguration {
                                 "/register",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html").permitAll()
+                                "/swagger-ui.html"
+                        ).permitAll()
                                 //.anyRequest().authenticated()
-                        .requestMatchers("/createAccountType").hasRole("ADMIN")
+                        .requestMatchers(
+                                "/createAccountType"
+                        ).hasRole("ADMIN")
+                        .requestMatchers(
+                                "/withdraw",
+                                "/deposit",
+                                "/transferFunds",
+                                "/checkBalance",
+                                "/isOverdraftOptedIn"
+                        ).hasRole("USER")
                         .anyRequest().hasAnyRole("USER", "ADMIN")
                 ) //all other requests require jwt authentication
                 .httpBasic(AbstractHttpConfigurer::disable)
