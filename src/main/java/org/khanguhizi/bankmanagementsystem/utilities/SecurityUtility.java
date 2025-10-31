@@ -38,7 +38,7 @@ public class SecurityUtility {
                 Otherwise, use auth.getName().
          */
 
-        return customerRepository.findByEmail(username)
+        return customerRepository.findByUsername(username)
                 .orElseThrow(() -> new UnauthorizedAccessException("Customer not found for the logged-in user"));
     }
         /*
@@ -58,7 +58,7 @@ public class SecurityUtility {
             If no account is found, throw UnauthorizedAccessException.
          */
 
-        if (account.getCustomer().getId().equals(currentCustomer.getId())) {
+        if (!account.getCustomer().getId().equals(currentCustomer.getId())) {
             throw new UnauthorizedAccessException("You are not authorized to perform transactions on this account");
         }
 
