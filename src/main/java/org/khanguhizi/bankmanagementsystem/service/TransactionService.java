@@ -6,6 +6,7 @@ import org.khanguhizi.bankmanagementsystem.exceptions.*;
 import org.khanguhizi.bankmanagementsystem.models.*;
 import org.khanguhizi.bankmanagementsystem.dto.*;
 import org.khanguhizi.bankmanagementsystem.repository.*;
+import org.khanguhizi.bankmanagementsystem.utilities.SecurityUtility;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import java.util.Random;
 public class TransactionService {
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private final SecurityUtility securityUtility;
 
 
     private String generateTransactionCode(){
@@ -63,7 +65,9 @@ public class TransactionService {
     }
 
     public ApiResponse deposit(TransactionRequest request) {
-        Optional<Accounts> existingAccount = accountRepository.findById(request.getAccountId());
+        securityUtility.verifyAccountOwnership(request.getAccountNumber());
+
+        Optional<Accounts> existingAccount = accountRepository.findByAccountNumber(request.getAccountNumber());
         if (existingAccount.isEmpty()) {
             throw new NoAccountsFoundException("Account not found!");
         }
@@ -109,7 +113,9 @@ public class TransactionService {
     }
 
     public ApiResponse withdraw(TransactionRequest request) {
-        Optional<Accounts> existingAccount = accountRepository.findById(request.getAccountId());
+        securityUtility.verifyAccountOwnership(request.getAccountNumber());
+
+        Optional<Accounts> existingAccount = accountRepository.findByAccountNumber(request.getAccountNumber());
         if (existingAccount.isEmpty()) {
             throw new NoAccountsFoundException("Account not found!");
         }
@@ -127,7 +133,7 @@ public class TransactionService {
 
         if (accountTypeId == 1) {
             //log.info("accountypeid: {}" ,accountTypeId);
-            if (isOverdraftOptedIn == true) {
+            if (isOverdraftOptedIn) {
                 double overdraftLimit = account.getBalance() * 0.10;
                 double maxAllowedWithdrawal = account.getBalance() + overdraftLimit;
                 if (amount > maxAllowedWithdrawal) {

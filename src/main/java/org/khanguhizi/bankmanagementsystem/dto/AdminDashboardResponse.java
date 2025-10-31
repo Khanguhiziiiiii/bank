@@ -19,6 +19,10 @@ public class AdminDashboardResponse {
     private List<Customer> customers;
     private Map<String, List<Accounts>> accounts;
     private List<Transactions> transactions;
+    private Customer customer;
+    private Accounts account;
+    private Transactions transaction;
+
     private Summary summary;
 
     @Data
@@ -26,11 +30,38 @@ public class AdminDashboardResponse {
     @NoArgsConstructor
     @Builder
     public static class Summary {
-        private long totalCustomers;
-        private long totalTransactions;
-        private long totalAccounts;
+
+        private AccountsSummary accounts;
+        private TransactionsSummary transactions;
+
         private double bankBalance;
         private double moneyIn;
         private double moneyOut;
+
+        private long totalCustomers;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class AccountsSummary {
+        private long total;
+        private long checking;
+        private long savings;
+        private long junior;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class TransactionsSummary {
+        private long total;
+        private long deposit;
+        private long withdraw;
+        private long transfer;
+        private long checkBalance;
     }
 }
+

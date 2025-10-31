@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(updatable = false, nullable = false, length = 50)
     private String firstName;

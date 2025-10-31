@@ -100,4 +100,13 @@ public class GlobalExceptionHandlers {
         body.put("message", ex.getMessage());
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<ApiResponse> handleUnauthorizedAccessException(UnauthorizedAccessException unauthorizedAccessException) {
+        ApiResponse response = ApiResponse.builder()
+                .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                .message(unauthorizedAccessException.getMessage())
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
 }

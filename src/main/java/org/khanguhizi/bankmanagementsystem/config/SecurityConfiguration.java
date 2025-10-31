@@ -50,7 +50,8 @@ public class SecurityConfiguration {
                         ).permitAll()
                                 //.anyRequest().authenticated()
                         .requestMatchers(
-                                "/createAccountType"
+                                "/createAccountType",
+                                "/admin/*"
                         ).hasRole("ADMIN")
                         .requestMatchers(
                                 "/withdraw",
