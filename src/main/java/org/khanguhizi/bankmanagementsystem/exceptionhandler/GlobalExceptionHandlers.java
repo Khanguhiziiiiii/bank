@@ -109,4 +109,13 @@ public class GlobalExceptionHandlers {
                 .build();
         return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(NoTransactionsFoundException.class)
+    public ResponseEntity<ApiResponse> handleNoTransactionsFoundException(NoTransactionsFoundException noTransactionsFoundException) {
+        ApiResponse response = ApiResponse.builder()
+                .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                .message(noTransactionsFoundException.getMessage())
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
 }

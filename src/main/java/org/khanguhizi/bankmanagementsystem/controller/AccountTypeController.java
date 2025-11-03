@@ -32,9 +32,12 @@ public class AccountTypeController {
             summary = "Fetches account types present in the database",
             description = "Restricts account creation to only the account types present in the databased"
     )
-    @PostMapping("/fetchAccountType")
-    public ResponseEntity <org.khanguhizi.bankmanagementsystem.dto.ApiResponse> fetchAccountType(@RequestBody AccountTypeRequest accountTypeRequest) {
-        var fetchAccountTypeRes = accountTypeService.fetchAccountType(accountTypeRequest);
-        return new ResponseEntity<>(fetchAccountTypeRes, HttpStatus.OK);
+    @GetMapping("/fetchAccountType/{accountTypeId}")
+    public ResponseEntity <org.khanguhizi.bankmanagementsystem.dto.ApiResponse> fetchAccountType(@PathVariable int accountTypeId) {
+        AccountTypeRequest request = new AccountTypeRequest();
+        request.setAccountTypeId(accountTypeId);
+
+        var response = accountTypeService.fetchAccountType(request);
+        return ResponseEntity.ok(response);
     }
 }

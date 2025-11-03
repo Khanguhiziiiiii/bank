@@ -9,6 +9,8 @@ import org.khanguhizi.bankmanagementsystem.repository.*;
 import org.khanguhizi.bankmanagementsystem.utilities.SecurityUtility;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -294,4 +296,38 @@ public class TransactionService {
                 .build();
     }
 
+    public ApiResponse getAccountStatement(String accountNumber){
+        securityUtility.verifyAccountOwnership(accountNumber);
+
+        Optional<Accounts> existingAccount = accountRepository.findByAccountNumber(accountNumber);
+        if(existingAccount.isEmpty()){
+            throw new NoAccountsFoundException("Account not found!");
+        }
+
+        List<Transactions> transactions = transactionRepository
+                .findByFromAccountOrToAccountOrderByTransactionDate(accountNumber, accountNumber);
+
+        if(transactions.isEmpty()){
+            throw new NoTransactionsFoundException("No transactions for this account!");
+        }
+
+        List<TransactionResponse> statement = transactions.stream().map(tx -> {
+            TransactionResponse transactionResponse = new TransactionResponse();
+            transactionResponse.setTransactionCode(tx.getTransactionCode());
+            transactionResponse.setTransactionType(tx.getTransactionType());
+            transactionResponse.setFromAccount(tx.getFromAccount());
+            transactionResponse.setToAccount(tx.getToAccount());
+            transactionResponse.setAmount(tx.getAmount());
+            transactionResponse.setFromBalance(tx.getFromBalance());
+            transactionResponse.setToBalance(tx.getToBalance());
+            transactionResponse.setDate(tx.getTransactionDate());
+            return transactionResponse;
+        }).toList();
+
+        return ApiResponse.builder()
+                .message("Account statement retrieved successfully.")
+                .data(statement)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
 }

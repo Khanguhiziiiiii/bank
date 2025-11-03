@@ -8,10 +8,7 @@ import org.khanguhizi.bankmanagementsystem.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 //@CrossOrigin(originPatterns = "*", origins = {"*"}, allowedHeaders = {"*"})
 
@@ -60,11 +57,21 @@ public class TransactionController {
 
     @Operation(
             summary = "Facilitates transfer of funds between accounts",
-            description = "Allows user to input the "
+            description = "Allows user to input the recipient account and amount to send, then transfer the funds to the recipient account"
     )
     @PostMapping ("/transferFunds")
     public ResponseEntity<ApiResponse> transferFunds(@RequestBody TransferFundsRequest transferFundsRequest){
         var transferFundsRes= transactionService.transferFunds(transferFundsRequest);
         return new ResponseEntity<>(transferFundsRes, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Fetch account statement",
+            description = "Retrieves all transactions for a specific account, similar to a bank statement"
+    )
+    @PostMapping("/getAccountStatement")
+    public ResponseEntity<ApiResponse> getAccountStatement(@RequestBody TransactionRequest transactionRequest) {
+        var statementRes = transactionService.getAccountStatement(String.valueOf(transactionRequest));
+        return new ResponseEntity<>(statementRes, HttpStatus.OK);
     }
 }
