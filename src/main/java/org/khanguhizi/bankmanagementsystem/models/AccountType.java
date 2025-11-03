@@ -19,4 +19,6 @@ public class AccountType {
 
     @Column(updatable = false, nullable = false, length = 50)
     private String accountType;
+
+
 }

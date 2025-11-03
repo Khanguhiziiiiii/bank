@@ -317,9 +317,7 @@ public class TransactionService {
             transactionResponse.setTransactionType(tx.getTransactionType());
             transactionResponse.setFromAccount(tx.getFromAccount());
             transactionResponse.setToAccount(tx.getToAccount());
-            transactionResponse.setAmount(tx.getAmount() != null ? tx.getAmount() : 0.0);
-            transactionResponse.setFromBalance(tx.getFromBalance());
-            transactionResponse.setToBalance(tx.getToBalance());
+            transactionResponse.setAmount(tx.getAmount());
             transactionResponse.setDate(tx.getTransactionDate());
             return transactionResponse;
         }).toList();

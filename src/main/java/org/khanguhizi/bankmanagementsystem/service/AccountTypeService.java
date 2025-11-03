@@ -48,11 +48,11 @@ public class AccountTypeService {
             throw new NoAccountsFoundException("No account types found!");
         }
 
-        // Map each AccountType entity to a response DTO
         List<AccountTypeResponse> responses = accountTypes.stream()
                 .map(type -> {
                     AccountTypeResponse res = new AccountTypeResponse();
                     res.setAccountType(type.getAccountType());
+                    res.setAccountTypeId(type.getId());
                     return res;
                 })
                 .toList();

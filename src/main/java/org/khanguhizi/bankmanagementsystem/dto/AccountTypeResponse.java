@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 public class AccountTypeResponse {
+    private int accountTypeId;
     private String accountType;
 }
