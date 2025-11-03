@@ -41,19 +41,26 @@ public class AccountTypeService {
                 .build();
     }
 
-    public ApiResponse fetchAccountType(AccountTypeRequest request) {
-        Optional<AccountType> accountType = accountTypeRepository.findById(request.getAccountTypeId());
-        if (accountType.isEmpty()) {
-            throw new NoAccountsFoundException("Account Type Not Found!");
+    public ApiResponse fetchAllAccountTypes() {
+        List<AccountType> accountTypes = accountTypeRepository.findAll();
+
+        if (accountTypes.isEmpty()) {
+            throw new NoAccountsFoundException("No account types found!");
         }
 
-        AccountTypeResponse response = new AccountTypeResponse();
-        response.setAccountType(accountType.get().getAccountType());
+        // Map each AccountType entity to a response DTO
+        List<AccountTypeResponse> responses = accountTypes.stream()
+                .map(type -> {
+                    AccountTypeResponse res = new AccountTypeResponse();
+                    res.setAccountType(type.getAccountType());
+                    return res;
+                })
+                .toList();
 
         return ApiResponse.builder()
-                .message("Account Type Fetched Successfully!")
-                .data(response)
-                .status(String.valueOf(HttpStatus.OK))
+                .message("Account Types Fetched Successfully!")
+                .data(responses)
+                .status(String.valueOf(HttpStatus.OK.value()))
                 .build();
     }
 }

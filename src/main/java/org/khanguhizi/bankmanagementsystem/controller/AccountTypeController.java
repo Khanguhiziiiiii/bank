@@ -3,7 +3,7 @@ package org.khanguhizi.bankmanagementsystem.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.khanguhizi.bankmanagementsystem.dto.AccountTypeRequest;
+import org.khanguhizi.bankmanagementsystem.dto.*;
 import org.khanguhizi.bankmanagementsystem.service.AccountTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,12 +32,10 @@ public class AccountTypeController {
             summary = "Fetches account types present in the database",
             description = "Restricts account creation to only the account types present in the databased"
     )
-    @GetMapping("/fetchAccountType/{accountTypeId}")
-    public ResponseEntity <org.khanguhizi.bankmanagementsystem.dto.ApiResponse> fetchAccountType(@PathVariable int accountTypeId) {
-        AccountTypeRequest request = new AccountTypeRequest();
-        request.setAccountTypeId(accountTypeId);
-
-        var response = accountTypeService.fetchAccountType(request);
+    @GetMapping("/fetchAccountTypes")
+    public ResponseEntity<ApiResponse> fetchAllAccountTypes() {
+        var response = accountTypeService.fetchAllAccountTypes();
         return ResponseEntity.ok(response);
     }
+
 }

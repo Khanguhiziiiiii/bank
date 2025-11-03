@@ -69,9 +69,10 @@ public class TransactionController {
             summary = "Fetch account statement",
             description = "Retrieves all transactions for a specific account, similar to a bank statement"
     )
-    @PostMapping("/getAccountStatement")
-    public ResponseEntity<ApiResponse> getAccountStatement(@RequestBody TransactionRequest transactionRequest) {
-        var statementRes = transactionService.getAccountStatement(String.valueOf(transactionRequest));
-        return new ResponseEntity<>(statementRes, HttpStatus.OK);
+    @GetMapping("/account/{accountNumber}/statement")
+    public ResponseEntity<ApiResponse> getAccountStatement(@PathVariable String accountNumber) {
+
+        var statementRes = transactionService.getAccountStatement(accountNumber);
+        return ResponseEntity.ok(statementRes);
     }
 }
