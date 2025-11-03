@@ -20,9 +20,6 @@ public class Transactions {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private int transactionId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Accounts account;
-
     @Column (updatable = false, nullable = false, length = 50)
     private String transactionType;
 
@@ -32,17 +29,20 @@ public class Transactions {
     @Column (updatable = false, nullable = false, length = 50)
     private LocalDateTime transactionDate;
 
-    @Column (updatable = false, nullable = false, length = 50)
-    private double balance;
-
     @Column (updatable = false)
    private Double amount =0.0;
 
     @Column (updatable = false, nullable = true, columnDefinition = "varchar not null default 'N/A'")
     private String fromAccount;
 
+    @Column (updatable = false, nullable = false, length = 50, columnDefinition = "double precision default 0")
+    private double fromBalance;
+
     @Column (updatable = false, nullable = true, columnDefinition = "varchar not null default 'N/A'")
     private String toAccount;
+
+    @Column (updatable = false, nullable = false, length = 50, columnDefinition = "double precision default 0")
+    private double toBalance;
 
     @PrePersist
     public void prePersist() {

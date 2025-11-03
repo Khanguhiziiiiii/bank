@@ -5,9 +5,10 @@ import lombok.Data;
 
 @Data
 public class TransactionRequest {
-    private int accountId;
-    private String accountNumber;
+    private String fromAccount;
+    private String toAccount;
     private double amount;
-    private double balance;
+    private double fromBalance;
+    private double toBalance;
     private boolean isOverdraftOptedIn;
 }

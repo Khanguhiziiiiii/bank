@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class BalanceRequest {
-    private int accountId;
+    private String fromAccount;
 }

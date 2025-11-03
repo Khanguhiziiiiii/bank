@@ -5,8 +5,8 @@ import org.khanguhizi.bankmanagementsystem.models.AccountType;
 
 @Data
 public class BalanceResponse {
-    private String accountNumber;
+    private String fromAccount;
     private int accountType;
-    private double balance;
+    private double fromBalance;
     private String transactionCode;
 }

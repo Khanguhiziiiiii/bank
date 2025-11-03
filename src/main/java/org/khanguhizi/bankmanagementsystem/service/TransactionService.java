@@ -33,7 +33,7 @@ public class TransactionService {
     }
 
     public ApiResponse isOverdraftOptedIn(TransactionRequest request) {
-        Optional<Accounts> existingAccount = accountRepository.findById(request.getAccountId());
+        Optional<Accounts> existingAccount = accountRepository.findByAccountNumber(request.getFromAccount());
         if (existingAccount.isEmpty()) {
             throw new NoAccountsFoundException("Account not found!");
         }
@@ -65,9 +65,9 @@ public class TransactionService {
     }
 
     public ApiResponse deposit(TransactionRequest request) {
-        securityUtility.verifyAccountOwnership(request.getAccountNumber());
+        securityUtility.verifyAccountOwnership(request.getToAccount());
 
-        Optional<Accounts> existingAccount = accountRepository.findByAccountNumber(request.getAccountNumber());
+        Optional<Accounts> existingAccount = accountRepository.findByAccountNumber(request.getToAccount());
         if (existingAccount.isEmpty()) {
             throw new NoAccountsFoundException("Account not found!");
         }
@@ -88,12 +88,12 @@ public class TransactionService {
 
         Transactions transaction = Transactions.builder()
                 .transactionCode(transactionCode)
-                .account(account)
+                .toAccount(String.valueOf(account))
                 .amount(amount)
-                .balance(account.getBalance())
+                .toBalance(account.getBalance())
                 .transactionType("deposit")
                 .fromAccount("N/A")
-                .toAccount("N/A")
+                .fromBalance(0)
                 .build();
 
         transactionRepository.save(transaction);
@@ -101,7 +101,7 @@ public class TransactionService {
 
         TransactionResponse transactionResponse = new TransactionResponse();
         transactionResponse.setTransactionCode(transactionCode);
-        transactionResponse.setBalance(account.getBalance());
+        transactionResponse.setToBalance(account.getBalance());
         transactionResponse.setAmount(transaction.getAmount());
 
 
@@ -113,9 +113,9 @@ public class TransactionService {
     }
 
     public ApiResponse withdraw(TransactionRequest request) {
-        securityUtility.verifyAccountOwnership(request.getAccountNumber());
+        securityUtility.verifyAccountOwnership(request.getFromAccount());
 
-        Optional<Accounts> existingAccount = accountRepository.findByAccountNumber(request.getAccountNumber());
+        Optional<Accounts> existingAccount = accountRepository.findByAccountNumber(request.getFromAccount());
         if (existingAccount.isEmpty()) {
             throw new NoAccountsFoundException("Account not found!");
         }
@@ -165,12 +165,12 @@ public class TransactionService {
 
         Transactions transaction = Transactions.builder()
                 .transactionCode(transactionCode)
-                .account(account)
+                .fromAccount(String.valueOf(account))
                 .amount(amount)
-                .balance(account.getBalance())
+                .fromBalance(account.getBalance())
                 .transactionType("withdrawal")
-                .fromAccount("N/A")
                 .toAccount("N/A")
+                .toBalance(0)
                 .build();
 
         transactionRepository.save(transaction);
@@ -178,7 +178,7 @@ public class TransactionService {
 
         TransactionResponse transactionResponse = new TransactionResponse();
         transactionResponse.setTransactionCode(transactionCode);
-        transactionResponse.setBalance(account.getBalance());
+        transactionResponse.setFromBalance(account.getBalance());
         transactionResponse.setAmount(transaction.getAmount());
 
         return ApiResponse.builder()
@@ -189,7 +189,8 @@ public class TransactionService {
     }
 
     public ApiResponse checkBalance(BalanceRequest request) {
-        Optional<Accounts> existingAccount = accountRepository.findById(request.getAccountId());
+        securityUtility.verifyAccountOwnership(request.getFromAccount());
+        Optional<Accounts> existingAccount = accountRepository.findByAccountNumber(request.getFromAccount());
         if (existingAccount.isEmpty()) {
             throw new NoAccountsFoundException("Account not found!");
         }
@@ -202,8 +203,8 @@ public class TransactionService {
 
         Transactions transaction = Transactions.builder()
                 .transactionCode(transactionCode)
-                .account(account)
-                .balance(account.getBalance())
+                .fromAccount(String.valueOf(account))
+                .fromBalance(account.getBalance())
                 .transactionType("balance")
                 .build();
 
@@ -211,10 +212,10 @@ public class TransactionService {
 
 
         BalanceResponse balanceResponse = new BalanceResponse();
-        balanceResponse.setAccountNumber(account.getAccountNumber());
+        balanceResponse.setFromAccount(account.getAccountNumber());
         balanceResponse.setAccountType(accountTypeId);
         balanceResponse.setTransactionCode(transactionCode);
-        balanceResponse.setBalance(account.getBalance());
+        balanceResponse.setFromBalance(account.getBalance());
 
         return ApiResponse.builder()
                 .message("Transaction Successful!")
@@ -224,6 +225,8 @@ public class TransactionService {
     }
 
     public ApiResponse transferFunds(TransferFundsRequest request){
+        securityUtility.verifyAccountOwnership(request.getFromAccount());
+
         Optional<Accounts> existingFromAccount = accountRepository.findByAccountNumber(request.getFromAccount());
         if(existingFromAccount.isEmpty()){
             throw new NoAccountsFoundException("Sender Account not found!");
@@ -267,11 +270,11 @@ public class TransactionService {
 
         Transactions transaction = Transactions.builder()
                 .transactionCode(transactionCode)
-                //.fromAccount(transaction.getFromAccount())
-                .balance(fromAccount.getBalance())
+                .fromAccount(fromAccount.getAccountNumber())
+                .fromBalance(fromAccount.getBalance())
                 .transactionType("transfer")
-                //.toAccount(transaction.getToAccount())
-                .balance(toAccount.getBalance())
+                .toAccount(toAccount.getAccountNumber())
+                .toBalance(toAccount.getBalance())
                 .build();
 
         transactionRepository.save(transaction);
@@ -279,9 +282,10 @@ public class TransactionService {
         TransferFundsResponse  transferFundsResponse = new TransferFundsResponse();
         transferFundsResponse.setTransactionCode(transactionCode);
         transferFundsResponse.setFromAccount(fromAccount.getAccountNumber());
-        transferFundsResponse.setBalance(fromAccount.getBalance());
+        transferFundsResponse.setFromBalance(fromAccount.getBalance());
+        transferFundsResponse.setAmount(amount);
         transferFundsResponse.setToAccount(toAccount.getAccountNumber());
-        transferFundsResponse.setBalance(toAccount.getBalance());
+        transferFundsResponse.setToBalance(toAccount.getBalance());
 
         return ApiResponse.builder()
                 .message("Transaction Successful!")

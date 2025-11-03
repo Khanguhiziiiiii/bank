@@ -5,8 +5,9 @@ import lombok.Data;
 @Data
 public class TransferFundsResponse {
     private String fromAccount;
-    private String toAccount;
+    private double fromBalance;
     private double amount;
-    private double balance;
+    private String toAccount;
+    private double toBalance;
     private String transactionCode;
 }
