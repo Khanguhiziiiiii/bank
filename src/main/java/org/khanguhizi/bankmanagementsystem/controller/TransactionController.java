@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 public class TransactionController {
     @Autowired
     private TransactionService transactionService;
+    @Autowired
+    private TransactionCostsService transactionCostsService;
 
     @Operation(
             summary = "Facilitates deposit transactions",
@@ -74,5 +76,15 @@ public class TransactionController {
 
         var statementRes = transactionService.getAccountStatement(accountNumber);
         return ResponseEntity.ok(statementRes);
+    }
+
+    @Operation(
+            summary = "Manage transaction costs",
+            description = "Allows admin to set and update transaction costs"
+    )
+    @PostMapping("/admin/updateTransactionCosts")
+    public ResponseEntity<ApiResponse> updateTransactionCosts(@RequestBody TransactionCostsRequest transactionCostsRequest){
+        var updateTransactionCostRes =transactionCostsService.addCost(transactionCostsRequest);
+        return new ResponseEntity<>(updateTransactionCostRes, HttpStatus.OK);
     }
 }
