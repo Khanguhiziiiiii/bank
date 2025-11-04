@@ -20,6 +20,7 @@ import java.util.Random;
 public class TransactionService {
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private final TransactionCostsService transactionCostsService;
     private final SecurityUtility securityUtility;
 
 
@@ -90,10 +91,11 @@ public class TransactionService {
 
         Transactions transaction = Transactions.builder()
                 .transactionCode(transactionCode)
-                .toAccount(String.valueOf(account))
+                .toAccount(account.getAccountNumber())
                 .amount(amount)
                 .toBalance(account.getBalance())
-                .transactionType("deposit")
+                .transactionCost(0.0)
+                .transactionType(TransactionTypes.DEPOSIT.name())
                 .fromAccount("N/A")
                 .fromBalance(0)
                 .build();
@@ -129,6 +131,8 @@ public class TransactionService {
 
         boolean isOverdraftOptedIn = request.isOverdraftOptedIn();
 
+        double transactionCost = transactionCostsService.getTransactionCost(amount, TransactionTypes.WITHDRAW);
+
         if(amount<=0){
             throw new InvalidEntryException("Enter valid amount!");
         }
@@ -138,28 +142,28 @@ public class TransactionService {
             if (isOverdraftOptedIn) {
                 double overdraftLimit = account.getBalance() * 0.10;
                 double maxAllowedWithdrawal = account.getBalance() + overdraftLimit;
-                if (amount > maxAllowedWithdrawal) {
+                if (amount + transactionCost > maxAllowedWithdrawal) {
                     throw new InsufficientFundsException("Insufficient funds! Maximum withdrawal is " + maxAllowedWithdrawal);
                 }
             }else{
-                if (account.getBalance() < amount) {
+                if (account.getBalance() < amount + transactionCost) {
                     throw new InsufficientFundsException("Insufficient Funds!");
                 }
             }
         } else {
-            if (account.getBalance() < amount) {
+            if (account.getBalance() < amount + transactionCost) {
                 throw new InsufficientFundsException("Insufficient Funds!");
             }
         }
 
         if (accountTypeId == 3) {
             double maxAllowedWithdrawal = account.getBalance() * 0.10;
-            if (amount > maxAllowedWithdrawal) {
+            if (amount + transactionCost> maxAllowedWithdrawal) {
                 throw new InvalidEntryException("Amount exceeds what is allowed! Maximum deposit is " + maxAllowedWithdrawal);
             }
         }
 
-        account.setBalance(account.getBalance() - amount);
+        account.setBalance(account.getBalance() - amount - transactionCost);
         accountRepository.save(account);
 
         String transactionCode = generateTransactionCode();
@@ -167,10 +171,11 @@ public class TransactionService {
 
         Transactions transaction = Transactions.builder()
                 .transactionCode(transactionCode)
-                .fromAccount(String.valueOf(account))
+                .fromAccount(account.getAccountNumber())
                 .amount(amount)
                 .fromBalance(account.getBalance())
-                .transactionType("withdrawal")
+                .transactionCost(transactionCost)
+                .transactionType(TransactionTypes.WITHDRAW.name())
                 .toAccount("N/A")
                 .toBalance(0)
                 .build();
@@ -203,16 +208,6 @@ public class TransactionService {
 
         Integer accountTypeId = account.getAccountType().getId();
 
-        Transactions transaction = Transactions.builder()
-                .transactionCode(transactionCode)
-                .fromAccount(String.valueOf(account))
-                .fromBalance(account.getBalance())
-                .transactionType("balance")
-                .build();
-
-        transactionRepository.save(transaction);
-
-
         BalanceResponse balanceResponse = new BalanceResponse();
         balanceResponse.setFromAccount(account.getAccountNumber());
         balanceResponse.setAccountType(accountTypeId);
@@ -243,6 +238,8 @@ public class TransactionService {
 
         double amount = request.getAmount();
 
+        double transactionCost = transactionCostsService.getTransactionCost(amount, TransactionTypes.TRANSFER);
+
         if (request.getAmount() <= 0){
             throw new InvalidEntryException("Enter valid amount!");
         }
@@ -250,7 +247,7 @@ public class TransactionService {
         Integer accountTypeId = fromAccount.getAccountType().getId();
         boolean isOverdraftOptedIn = fromAccount.isOverdraftOptedIn();
 
-        double maxAllowedTransfer = fromAccount.getBalance();
+        double maxAllowedTransfer = fromAccount.getBalance() + transactionCost;
         if (accountTypeId == 1 && isOverdraftOptedIn) {
             maxAllowedTransfer += fromAccount.getBalance() * 0.10;
         }
@@ -263,7 +260,7 @@ public class TransactionService {
             throw new InsufficientFundsException("Insufficient Funds!");
         }
 
-        fromAccount.setBalance(fromAccount.getBalance() - amount);
+        fromAccount.setBalance(fromAccount.getBalance() - amount - transactionCost);
         toAccount.setBalance(toAccount.getBalance() + amount);
         accountRepository.save(fromAccount);
         accountRepository.save(toAccount);
@@ -274,7 +271,9 @@ public class TransactionService {
                 .transactionCode(transactionCode)
                 .fromAccount(fromAccount.getAccountNumber())
                 .fromBalance(fromAccount.getBalance())
-                .transactionType("transfer")
+                .amount(amount)
+                .transactionCost(transactionCost)
+                .transactionType(TransactionTypes.TRANSFER.name())
                 .toAccount(toAccount.getAccountNumber())
                 .toBalance(toAccount.getBalance())
                 .build();
@@ -317,7 +316,7 @@ public class TransactionService {
             transactionResponse.setTransactionType(tx.getTransactionType());
             transactionResponse.setFromAccount(tx.getFromAccount());
             transactionResponse.setToAccount(tx.getToAccount());
-            transactionResponse.setAmount(tx.getAmount());
+            transactionResponse.setAmount(tx.getAmount() == null ? 0.0 : tx.getAmount());
             transactionResponse.setDate(tx.getTransactionDate());
             return transactionResponse;
         }).toList();

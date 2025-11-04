@@ -29,7 +29,7 @@ public class Transactions {
     @Column (updatable = false, nullable = false, length = 50)
     private LocalDateTime transactionDate;
 
-    @Column (updatable = false)
+    @Column (updatable = false, nullable = false, length = 50)
    private Double amount =0.0;
 
     @Column (updatable = false, nullable = true, columnDefinition = "varchar not null default 'N/A'")
@@ -43,6 +43,9 @@ public class Transactions {
 
     @Column (updatable = false, nullable = false, length = 50, columnDefinition = "double precision default 0")
     private double toBalance;
+
+    @Column (updatable = false, nullable = false, length = 3, columnDefinition = "double precision default 0")
+    private double transactionCost;
 
     @PrePersist
     public void prePersist() {
