@@ -88,13 +88,14 @@ public class TransactionService {
 
         String transactionCode = generateTransactionCode();
 
+        double transactionCost = transactionCostsService.getTransactionCost(amount, TransactionTypes.DEPOSIT);
 
         Transactions transaction = Transactions.builder()
                 .transactionCode(transactionCode)
                 .toAccount(account.getAccountNumber())
                 .amount(amount)
                 .toBalance(account.getBalance())
-                .transactionCost(0.0)
+                .transactionCost(transactionCost)
                 .transactionType(TransactionTypes.DEPOSIT.name())
                 .fromAccount("N/A")
                 .fromBalance(0)
@@ -107,6 +108,7 @@ public class TransactionService {
         transactionResponse.setTransactionCode(transactionCode);
         transactionResponse.setToBalance(account.getBalance());
         transactionResponse.setAmount(transaction.getAmount());
+        transactionResponse.setTransactionCost(transactionCost);
 
 
         return ApiResponse.builder()
@@ -187,6 +189,7 @@ public class TransactionService {
         transactionResponse.setTransactionCode(transactionCode);
         transactionResponse.setFromBalance(account.getBalance());
         transactionResponse.setAmount(transaction.getAmount());
+        transactionResponse.setTransactionCost(transactionCost);
 
         return ApiResponse.builder()
                 .message("Transaction Successful!")
@@ -287,6 +290,8 @@ public class TransactionService {
         transferFundsResponse.setAmount(amount);
         transferFundsResponse.setToAccount(toAccount.getAccountNumber());
         transferFundsResponse.setToBalance(toAccount.getBalance());
+        transferFundsResponse.setTransactionCost(transactionCost);
+
 
         return ApiResponse.builder()
                 .message("Transaction Successful!")

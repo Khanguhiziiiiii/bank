@@ -10,4 +10,5 @@ public class TransferFundsResponse {
     private String toAccount;
     private double toBalance;
     private String transactionCode;
+    private double transactionCost;
 }
