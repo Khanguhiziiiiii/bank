@@ -332,4 +332,21 @@ public class TransactionService {
                 .status(String.valueOf(HttpStatus.OK))
                 .build();
     }
+
+    public ApiResponse previewCharge(double amount, TransactionTypes transactionType) {
+        double transactionCost = transactionCostsService.getTransactionCost(amount, transactionType);
+
+        TransactionPreviewResponse response = TransactionPreviewResponse.builder()
+                .amount(amount)
+                .transactionType(TransactionTypes.valueOf(transactionType.name()))
+                .transactionCost(transactionCost)
+                .build();
+
+        return ApiResponse.builder()
+                .message("Transaction cost retrieved successfully.")
+                .data(response)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
 }

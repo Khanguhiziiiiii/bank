@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.khanguhizi.bankmanagementsystem.dto.*;
+import org.khanguhizi.bankmanagementsystem.models.TransactionTypes;
 import org.khanguhizi.bankmanagementsystem.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -86,5 +87,14 @@ public class TransactionController {
     public ResponseEntity<ApiResponse> updateTransactionCosts(@RequestBody TransactionCostsRequest transactionCostsRequest){
         var updateTransactionCostRes =transactionCostsService.addCost(transactionCostsRequest);
         return new ResponseEntity<>(updateTransactionCostRes, HttpStatus.OK);
+    }
+
+    @GetMapping("/charges")
+    public ResponseEntity<ApiResponse> getTransactionCharge(
+            @RequestParam double amount,
+            @RequestParam TransactionTypes type
+    ) {
+        var previewTransactions = transactionService.previewCharge(amount, type);
+        return new ResponseEntity<>(previewTransactions, HttpStatus.OK);
     }
 }
