@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import lombok.*;
 
 
 @Service
@@ -22,7 +23,6 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
-
 
     public ApiResponse register(RegisterRequest request){
         //Check if customer exists
@@ -70,9 +70,9 @@ public class CustomerService {
                .build();
     }
 
-    public ApiResponse login(LoginRequest request){
+    public ApiResponse login(LoginRequest request) {
         Optional<Customer> existingCustomer = customerRepository.findByEmailOrUsername(request.getUsernameOrEmail());
-        if(existingCustomer.isEmpty()){
+        if (existingCustomer.isEmpty()) {
             throw new InvalidCredentialsException("Invalid email or password!");
         }
 
@@ -105,6 +105,5 @@ public class CustomerService {
                     .status(String.valueOf(HttpStatus.OK))
                     .build();
         }
-
     }
 }

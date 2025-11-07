@@ -1,15 +1,15 @@
 package org.khanguhizi.bankmanagementsystem.service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -166,6 +166,43 @@ public class JWTService {
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String generatePasswordResetToken(String username) {
+        return Jwts
+                .builder()
+                .subject(username)
+                .claim("type", "password-reset") // distinguish from auth tokens
+                .issuedAt(new Date())
+                .expiration(Date.from(Instant.now().plus(15, ChronoUnit.MINUTES))) // 15 min validity
+                .signWith(getSignInKey())
+                .compact();
+    }
+    
+    public String validatePasswordResetToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(getSignKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+
+            // Check if this token was actually for password reset
+            if (!"password-reset".equals(claims.get("type"))) {
+                throw new JwtException("Invalid token type");
+            }
+
+            return claims.getSubject(); // returns username
+        } catch (ExpiredJwtException e) {
+            throw new JwtException("Token expired");
+        } catch (JwtException e) {
+            throw new JwtException("Invalid token");
+        }
+    }
+
+    private Key getSignKey() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
     /*

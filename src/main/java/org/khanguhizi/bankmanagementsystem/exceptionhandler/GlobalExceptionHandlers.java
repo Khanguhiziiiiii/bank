@@ -18,10 +18,10 @@ public class GlobalExceptionHandlers {
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ApiResponse> handleInvalidCredentials(InvalidCredentialsException invalidCredentialsException) {
         ApiResponse  response = ApiResponse.builder()
-                .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                .status(String.valueOf(HttpStatus.UNAUTHORIZED))
                 .message(invalidCredentialsException.getMessage())
                 .build();
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(DuplicateCredentialsException.class)
