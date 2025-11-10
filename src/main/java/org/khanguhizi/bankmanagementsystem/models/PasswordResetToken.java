@@ -1,3 +1,4 @@
+/*
 package org.khanguhizi.bankmanagementsystem.models;
 
 import lombok.*;
@@ -26,3 +27,5 @@ public class PasswordResetToken {
     private LocalDateTime expiresAt;
     private boolean used;
 }
+
+ */
