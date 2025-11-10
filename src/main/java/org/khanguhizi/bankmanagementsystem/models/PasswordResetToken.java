@@ -1,4 +1,3 @@
-/*
 package org.khanguhizi.bankmanagementsystem.models;
 
 import lombok.*;
@@ -20,12 +19,9 @@ public class PasswordResetToken {
 
     private String token;
 
-    @ManyToOne
-    @JoinColumn(name = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
 
     private LocalDateTime expiresAt;
     private boolean used;
 }
-
- */
