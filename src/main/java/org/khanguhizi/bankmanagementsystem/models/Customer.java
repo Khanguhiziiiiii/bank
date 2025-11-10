@@ -42,7 +42,7 @@ public class Customer {
     @Column(updatable = false, nullable = false, unique = true, length = 50)
     private String username;
 
-    @Column(updatable = false, nullable = false, length = 255)
+    @Column(nullable = false, length = 255)
     private String password;
 
     @Enumerated(EnumType.STRING)

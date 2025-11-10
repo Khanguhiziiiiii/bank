@@ -20,7 +20,7 @@ public class ResetPasswordService {
     private OTPRepository otpRepository;
 
     @Autowired
-    private CustomerRepository userRepository;
+    private CustomerRepository customerRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -38,11 +38,11 @@ public class ResetPasswordService {
             throw new RuntimeException("Invalid OTP");
         }
 
-        Customer user = userRepository.findByPhoneNumber(request.getPhoneNumber())
+        Customer customer = customerRepository.findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        userRepository.save(user);
+        customer.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        customerRepository.save(customer);
 
         otpRepository.deleteByPhoneNumber(request.getPhoneNumber());
 

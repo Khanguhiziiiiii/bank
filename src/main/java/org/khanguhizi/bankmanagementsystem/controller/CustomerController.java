@@ -6,6 +6,7 @@ import org.khanguhizi.bankmanagementsystem.dto.*;
 import org.khanguhizi.bankmanagementsystem.service.CustomerService;
 import org.khanguhizi.bankmanagementsystem.service.ForgotPasswordService;
 import org.khanguhizi.bankmanagementsystem.service.ResetPasswordService;
+import org.khanguhizi.bankmanagementsystem.service.UpdatePasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,8 @@ public class CustomerController {
     private ForgotPasswordService forgotPasswordService;
     @Autowired
     private ResetPasswordService resetPasswordService;
+    @Autowired
+    private UpdatePasswordService updatePasswordService;
 
     @Operation(
             summary = "Authenticate a customer",
@@ -62,6 +65,15 @@ public class CustomerController {
     @PostMapping("/resetPassword")
     public ResponseEntity<ApiResponse> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
         var response = resetPasswordService.resetPassword(resetPasswordRequest);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Updates the user's password"
+    )
+    @PostMapping("/updatePassword")
+    public ResponseEntity<ApiResponse> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest) {
+        var response = updatePasswordService.updatePassword(updatePasswordRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
