@@ -3,6 +3,7 @@ package org.khanguhizi.bankmanagementsystem.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.khanguhizi.bankmanagementsystem.models.Role;
 
 import java.time.LocalDate;
 
@@ -16,6 +17,7 @@ public class RegisterResponse {
     private String phoneNumber;
     private String nationalId;
     private LocalDate dateOfBirth;
+    private Role role;
     private String username;
 
 }

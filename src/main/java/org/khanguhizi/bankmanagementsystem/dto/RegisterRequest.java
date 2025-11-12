@@ -1,6 +1,7 @@
 package org.khanguhizi.bankmanagementsystem.dto;
 
 import lombok.Data;
+import org.khanguhizi.bankmanagementsystem.models.Role;
 
 import java.time.LocalDate;
 
@@ -14,4 +15,5 @@ public class RegisterRequest {
     private LocalDate dateOfBirth;
     private String username;
     private String password;
+    private Role role;
 }
