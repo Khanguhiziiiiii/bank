@@ -63,7 +63,7 @@ public class CustomerService {
        registerResponse.setNationalId(request.getNationalId());
        registerResponse.setDateOfBirth(request.getDateOfBirth());
        registerResponse.setUsername(request.getUsername());
-       registerResponse.setRole(request.getRole());
+       registerResponse.setRole(String.valueOf(customer.getRole()));
        return ApiResponse.builder()
                .message("Successfully registered!")
                .data(registerResponse)
@@ -91,7 +91,7 @@ public class CustomerService {
         loginResponse.setDateOfBirth(customer.getDateOfBirth());
         loginResponse.setUsername(customer.getUsername());
         loginResponse.setCustomerId(customerId.getId());
-        loginResponse.setRole(customer.getRole());
+        loginResponse.setRole(customer.getRole().name());
         loginResponse.setToken(jwtService.generateToken(new org.springframework.security.core.userdetails.User(
                 customer.getUsername(),
                 customer.getPassword(),

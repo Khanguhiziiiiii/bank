@@ -41,11 +41,15 @@ public class Accounts {
     @Column(updatable = false, nullable = false)
     private LocalDateTime updatedAt ;
 
+    @Column(updatable = true, nullable = false, columnDefinition = "boolean default true")
+    private Boolean active;
+
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
+
     @PreUpdate
     public void preUpdate() {
         updatedAt = LocalDateTime.now();

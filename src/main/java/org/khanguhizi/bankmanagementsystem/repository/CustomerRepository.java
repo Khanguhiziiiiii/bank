@@ -1,6 +1,8 @@
 package org.khanguhizi.bankmanagementsystem.repository;
 
 import org.khanguhizi.bankmanagementsystem.models.Customer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -14,4 +16,5 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer>{
  Optional<Customer> findByNationalId(String nationalId);
  Optional<Customer> findByPhoneNumber(String phoneNumber);
  List<Customer> findAll();
+ Page<Customer> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String firstName, String lastName, String email, Pageable pageable);
 }

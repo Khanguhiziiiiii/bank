@@ -48,4 +48,10 @@ public class Customer {
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR default 'USER'")
     private Role role;
+
+    @Column(updatable = true, nullable = false, columnDefinition = "boolean default false")
+    private Boolean deleted;
+
+    @Column(updatable = true, nullable = false, columnDefinition = "boolean default false")
+    private Boolean blocked;
 }

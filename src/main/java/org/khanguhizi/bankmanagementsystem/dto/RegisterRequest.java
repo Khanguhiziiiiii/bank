@@ -15,5 +15,4 @@ public class RegisterRequest {
     private LocalDate dateOfBirth;
     private String username;
     private String password;
-    private Role role;
 }

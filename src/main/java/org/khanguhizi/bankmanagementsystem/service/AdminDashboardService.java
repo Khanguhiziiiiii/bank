@@ -7,6 +7,10 @@ import org.khanguhizi.bankmanagementsystem.models.*;
 import org.khanguhizi.bankmanagementsystem.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -99,6 +103,139 @@ public class AdminDashboardService {
         return ApiResponse.builder()
                 .message("Dashboard Data")
                 .data(response)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+    public ApiResponse getAllCustomers(String search, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size); //Creates a Spring Data Pageable object to tell the repository which page and how many records per page you want.
+        Page<Customer> customerPage; //Declares a variable that will hold the paged list of customers returned by the repository.
+
+        if (StringUtils.hasText(search)) { //Checks whether the search string is not null and not empty.
+            customerPage = customerRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrEmailContainingIgnoreCase(search, search, search, pageable);
+            /*
+            Calls a custom query method in your CustomerRepository.
+            This method automatically searches (case-insensitive) for customers whose:
+            First name contains the search value OR
+            Last name contains the search value OR
+            Email contains the search value
+            The results are paginated using the Pageable object.
+             */
+        } else {
+            customerPage = customerRepository.findAll(pageable);
+            //If no search text was provided, just return all customers paginated.
+        }
+
+        return ApiResponse.builder()
+                .message("Customers fetched successfully")
+                .data(customerPage)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
+    public ApiResponse updateCustomer(Integer id, Customer updatedData) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new NoAccountsFoundException("Customer not found"));
+
+        customer.setFirstName(updatedData.getFirstName());
+        customer.setLastName(updatedData.getLastName());
+        customer.setEmail(updatedData.getEmail());
+        customer.setPhoneNumber(updatedData.getPhoneNumber());
+        customer.setNationalId(updatedData.getNationalId());
+
+        customerRepository.save(customer);
+
+        return ApiResponse.builder()
+                .message("Customer updated successfully")
+                .data(customer)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
+
+    public ApiResponse softDeleteCustomer(Integer id) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new NoAccountsFoundException("Customer not found"));
+        customer.setDeleted(true);
+        customerRepository.save(customer);
+
+        return ApiResponse.builder()
+                .message("Customer deleted (soft) successfully")
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
+    public ApiResponse toggleBlockCustomer(Integer id, boolean block) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new NoAccountsFoundException("Customer not found"));
+
+        customer.setBlocked(block);
+        customerRepository.save(customer);
+
+        String msg = block ? "Customer blocked successfully" : "Customer unblocked successfully";
+        return ApiResponse.builder()
+                .message(msg)
+                .data(customer)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
+    public ApiResponse getAllAccounts(Integer customerId) {
+        List<Accounts> accounts = accountRepository.findByCustomerId(customerId);
+        return ApiResponse.builder()
+                .message("Accounts fetched successfully")
+                .data(accounts)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
+    public ApiResponse getAccountDetails(Integer accountId) {
+        Accounts account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new NoAccountsFoundException("Account not found"));
+        return ApiResponse.builder()
+                .message("Account details fetched")
+                .data(account)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
+    public ApiResponse updateAccountStatus(Integer accountId, boolean active) {
+        Accounts account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new NoAccountsFoundException("Account not found"));
+        account.setActive(active);
+        accountRepository.save(account);
+
+        return ApiResponse.builder()
+                .message(active ? "Account activated" : "Account deactivated")
+                .data(account)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
+    public ApiResponse getAllTransactions(String type, Integer customerId) {
+        List<Transactions> transactions;
+
+        if (StringUtils.hasText(type)) {
+            transactions = transactionRepository.findByTransactionTypeIgnoreCase(type);
+        } else if (customerId != null) {
+            transactions = transactionRepository.findByAccount_Customer_Id(customerId);
+        } else {
+            transactions = transactionRepository.findAll();
+        }
+
+        return ApiResponse.builder()
+                .message("Transactions fetched successfully")
+                .data(transactions)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
+    public ApiResponse getTransactionDetails(Integer transactionId) {
+        Transactions transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new NoTransactionsFoundException("Transaction not found"));
+
+        return ApiResponse.builder()
+                .message("Transaction details fetched")
+                .data(transaction)
                 .status(String.valueOf(HttpStatus.OK))
                 .build();
     }

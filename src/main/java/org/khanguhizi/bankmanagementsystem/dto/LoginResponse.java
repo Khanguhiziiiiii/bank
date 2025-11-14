@@ -19,6 +19,6 @@ public class LoginResponse {
     private String nationalId;
     private LocalDate dateOfBirth;
     private String username;
-    private Role role;
+    private String role;
     private String token;
 }

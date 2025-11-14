@@ -17,7 +17,7 @@ public class RegisterResponse {
     private String phoneNumber;
     private String nationalId;
     private LocalDate dateOfBirth;
-    private Role role;
+    private String role;
     private String username;
 
 }
