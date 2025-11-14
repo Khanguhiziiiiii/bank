@@ -5,6 +5,7 @@ import org.khanguhizi.bankmanagementsystem.service.*;
 import org.khanguhizi.bankmanagementsystem.repository.*;
 import org.khanguhizi.bankmanagementsystem.models.*;
 import org.khanguhizi.bankmanagementsystem.exceptions.*;
+import org.khanguhizi.bankmanagementsystem.utilities.PasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,6 +42,11 @@ public class UpdatePasswordService {
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             throw new RuntimeException("New passwords do not match!");
         }
+
+        if (!PasswordValidator.isStrongPassword(request.getNewPassword())) {
+            throw new RuntimeException("Weak password! Must be at least 8 characters long, contain uppercase, lowercase, number, and special character.");
+        }
+
 
         customer.setPassword(passwordEncoder.encode(request.getNewPassword()));
         customerRepository.saveAndFlush(customer);

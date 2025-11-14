@@ -6,6 +6,7 @@ import org.khanguhizi.bankmanagementsystem.models.*;
 import org.khanguhizi.bankmanagementsystem.repository.*;
 import lombok.RequiredArgsConstructor;
 
+import org.khanguhizi.bankmanagementsystem.utilities.PasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,11 @@ public class CustomerService {
         if(phoneNumberCheck.isPresent()){
             throw new DuplicateCredentialsException("Phone Number already exists!");
         }
+
+        if (!PasswordValidator.isStrongPassword(request.getPassword())) {
+            throw new RuntimeException("Weak password! Must be at least 8 characters long, contain uppercase, lowercase, number, and special character.");
+        }
+
         Customer customer = Customer.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -52,6 +58,8 @@ public class CustomerService {
                 .role(Role.USER)
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .blocked(false)
+                .deleted(false)
                 .build();
         customerRepository.save(customer);
 

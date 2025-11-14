@@ -20,6 +20,9 @@ public class AccountController {
 @Autowired
     private AccountService accountService;
 
+@Autowired
+    private AdminDashboardService adminDashboardService;
+
     @Operation(
             summary = "Create a new bank account",
             description = "Creates a new bank account for an authenticated customer."
@@ -43,4 +46,28 @@ public class AccountController {
         var response = accountService.fetchAccountsByCustomer(request);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(
+            summary = "fetches details about an account"
+    )
+    @GetMapping("/get/account{accountId}/details")
+    public ResponseEntity<ApiResponse> getAccountDetails(
+            @PathVariable Integer accountId
+    ) {
+        ApiResponse response = accountService.getAccountDetails(accountId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "updates the status of an account (active or inactive)"
+    )
+    @PatchMapping("/admin/update/account{accountId}/status")
+    public ResponseEntity<ApiResponse> updateAccountStatus(
+            @PathVariable Integer accountId,
+            @RequestParam boolean active
+    ) {
+        ApiResponse response = adminDashboardService.updateAccountStatus(accountId, active);
+        return ResponseEntity.ok(response);
+    }
+
 }

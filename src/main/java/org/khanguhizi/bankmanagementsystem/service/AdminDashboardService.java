@@ -179,25 +179,6 @@ public class AdminDashboardService {
                 .build();
     }
 
-    public ApiResponse getAllAccounts(Integer customerId) {
-        List<Accounts> accounts = accountRepository.findByCustomerId(customerId);
-        return ApiResponse.builder()
-                .message("Accounts fetched successfully")
-                .data(accounts)
-                .status(String.valueOf(HttpStatus.OK))
-                .build();
-    }
-
-    public ApiResponse getAccountDetails(Integer accountId) {
-        Accounts account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new NoAccountsFoundException("Account not found"));
-        return ApiResponse.builder()
-                .message("Account details fetched")
-                .data(account)
-                .status(String.valueOf(HttpStatus.OK))
-                .build();
-    }
-
     public ApiResponse updateAccountStatus(Integer accountId, boolean active) {
         Accounts account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new NoAccountsFoundException("Account not found"));
@@ -229,8 +210,8 @@ public class AdminDashboardService {
                 .build();
     }
 
-    public ApiResponse getTransactionDetails(Integer transactionId) {
-        Transactions transaction = transactionRepository.findById(transactionId)
+    public ApiResponse getTransactionDetails(String transactionCode) {
+        Transactions transaction = transactionRepository.findByTransactionCode(transactionCode)
                 .orElseThrow(() -> new NoTransactionsFoundException("Transaction not found"));
 
         return ApiResponse.builder()

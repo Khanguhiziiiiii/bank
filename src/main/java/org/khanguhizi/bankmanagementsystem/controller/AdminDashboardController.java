@@ -74,4 +74,28 @@ public class AdminDashboardController {
         ApiResponse response = adminDashboardService.toggleBlockCustomer(id, block);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(
+            summary = "Fetches all transactions in a database.",
+            description = "Can be filtered by transaction type and customer Id"
+    )
+    @GetMapping ("/fetchTransactions")
+    public ResponseEntity<ApiResponse> getAllTransactions(
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) Integer customerId
+    ) {
+        ApiResponse response = adminDashboardService.getAllTransactions(type, customerId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "fetches the details about a transaction"
+    )
+    @GetMapping("/transaction{transactionCode}details")
+    public ResponseEntity<ApiResponse> getTransactionDetails(
+            @PathVariable String transactionCode
+    ) {
+        ApiResponse response = adminDashboardService.getTransactionDetails(transactionCode);
+        return ResponseEntity.ok(response);
+    }
 }

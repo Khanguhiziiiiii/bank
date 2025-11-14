@@ -93,4 +93,14 @@ public class AccountService {
                 .status(String.valueOf(HttpStatus.OK))
                 .build();
     }
+
+    public ApiResponse getAccountDetails(Integer accountId) {
+        Accounts account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new NoAccountsFoundException("Account not found"));
+        return ApiResponse.builder()
+                .message("Account details fetched")
+                .data(account)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
 }
