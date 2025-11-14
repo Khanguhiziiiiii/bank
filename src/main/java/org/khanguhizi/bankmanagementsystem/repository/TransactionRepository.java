@@ -10,5 +10,5 @@ public interface TransactionRepository extends JpaRepository<Transactions, Integ
     List<Transactions> findAll();
     List<Transactions> findByFromAccountOrToAccountOrderByTransactionDate(String fromAccount, String toAccount);
     List<Transactions>findByTransactionTypeIgnoreCase(String type);
-    List<Transactions> findByAccount_Customer_Id(Integer id);
+    List<Transactions> findByCustomerId(Integer id);
 }

@@ -217,7 +217,7 @@ public class AdminDashboardService {
         if (StringUtils.hasText(type)) {
             transactions = transactionRepository.findByTransactionTypeIgnoreCase(type);
         } else if (customerId != null) {
-            transactions = transactionRepository.findByAccount_Customer_Id(customerId);
+            transactions = transactionRepository.findByCustomerId(customerId);
         } else {
             transactions = transactionRepository.findAll();
         }

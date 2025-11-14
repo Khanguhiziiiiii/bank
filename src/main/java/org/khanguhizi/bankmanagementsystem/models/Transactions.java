@@ -38,6 +38,9 @@ public class Transactions {
     @Column (updatable = false, nullable = false, length = 50, columnDefinition = "double precision default 0")
     private double fromBalance;
 
+    @Column (updatable = false, length = 50)
+    private Integer customerId;
+
     @Column (updatable = false, nullable = true, columnDefinition = "varchar not null default 'N/A'")
     private String toAccount;
 
