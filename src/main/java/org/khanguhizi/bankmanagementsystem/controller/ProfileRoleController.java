@@ -9,10 +9,7 @@ import org.khanguhizi.bankmanagementsystem.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -54,7 +51,7 @@ public class ProfileRoleController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @PostMapping("/removeRoleFromProfile")
+    @PostMapping("/superadmin/removeRoleFromProfile")
     public ResponseEntity<ApiResponse> removeRoleFromProfile(
             @RequestBody ProfileRoleRequest request) {
 
@@ -62,7 +59,7 @@ public class ProfileRoleController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PostMapping("/fetchProfileRoles")
+    @PostMapping("/superadmin/fetchProfileRoles")
     public ResponseEntity<ApiResponse> fetchProfileRoles(
             @RequestBody ProfileRoleRequest request) {
 
@@ -70,14 +67,14 @@ public class ProfileRoleController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/fetchRoles")
+    @GetMapping("/superadmin/fetchRoles")
     public ResponseEntity<ApiResponse> fetchRoles() {
         ApiResponse response = profileRoleService.fetchRoles();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 
-    @GetMapping("/fetchProfiles")
+    @GetMapping("/superadmin/fetchProfiles")
     public ResponseEntity<ApiResponse> fetchProfiles() {
 
         ApiResponse response = profileRoleService.fetchProfiles();
