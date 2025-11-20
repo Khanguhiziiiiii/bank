@@ -80,5 +80,12 @@ public class ProfileRoleController {
         ApiResponse response = profileRoleService.fetchProfiles();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PostMapping("/superadmin/")
+    public ResponseEntity<ApiResponse> assignRolesToProfile(
+            @RequestBody ProfileRoleRequest request) {
+        var assignRolesRes = profileRoleService.assignRoleToProfile(request);
+        return new ResponseEntity<>(assignRolesRes, HttpStatus.OK);
+    }
 }
 
