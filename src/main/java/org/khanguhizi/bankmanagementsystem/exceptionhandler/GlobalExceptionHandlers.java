@@ -118,4 +118,13 @@ public class GlobalExceptionHandlers {
                 .build();
         return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(InvalidAccessException.class)
+    public ResponseEntity<ApiResponse> handleInvalidAccessException(InvalidAccessException invalidAccessException) {
+        ApiResponse  response = ApiResponse.builder()
+                .status(String.valueOf(HttpStatus.UNAUTHORIZED))
+                .message(invalidAccessException.getMessage())
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
 }

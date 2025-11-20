@@ -17,7 +17,7 @@ public class AccountType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(updatable = false, nullable = false, length = 50)
+    @Column(updatable = false, nullable = false, unique = true, length = 50)
     private String accountType;
 
 

@@ -106,7 +106,8 @@ public class AdminDashboardService {
                 .status(String.valueOf(HttpStatus.OK))
                 .build();
     }
-    public ApiResponse getAllCustomers(String search, int page, int size) {
+
+    public ApiResponse getAllUsers(String search, int page, int size) {
         Pageable pageable = PageRequest.of(page, size); //Creates a Spring Data Pageable object to tell the repository which page and how many records per page you want.
         Page<Customer> customerPage; //Declares a variable that will hold the paged list of customers returned by the repository.
 
@@ -126,15 +127,15 @@ public class AdminDashboardService {
         }
 
         return ApiResponse.builder()
-                .message("Customers fetched successfully")
+                .message("Users fetched successfully")
                 .data(customerPage)
                 .status(String.valueOf(HttpStatus.OK))
                 .build();
     }
 
-    public ApiResponse updateCustomer(Integer id, Customer updatedData) {
+    public ApiResponse updateUser(Integer id, Customer updatedData) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new NoAccountsFoundException("Customer not found"));
+                .orElseThrow(() -> new NoAccountsFoundException("User not found"));
 
         customer.setFirstName(updatedData.getFirstName());
         customer.setLastName(updatedData.getLastName());
@@ -145,33 +146,33 @@ public class AdminDashboardService {
         customerRepository.save(customer);
 
         return ApiResponse.builder()
-                .message("Customer updated successfully")
+                .message("User updated successfully")
                 .data(customer)
                 .status(String.valueOf(HttpStatus.OK))
                 .build();
     }
 
 
-    public ApiResponse softDeleteCustomer(Integer id) {
+    public ApiResponse softDeleteUser(Integer id) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new NoAccountsFoundException("Customer not found"));
+                .orElseThrow(() -> new NoAccountsFoundException("User not found"));
         customer.setDeleted(true);
         customerRepository.save(customer);
 
         return ApiResponse.builder()
-                .message("Customer deleted (soft) successfully")
+                .message("User deleted (soft) successfully")
                 .status(String.valueOf(HttpStatus.OK))
                 .build();
     }
 
-    public ApiResponse toggleBlockCustomer(Integer id, boolean block) {
+    public ApiResponse toggleBlockUser(Integer id, boolean block) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new NoAccountsFoundException("Customer not found"));
+                .orElseThrow(() -> new NoAccountsFoundException("User not found"));
 
         customer.setBlocked(block);
         customerRepository.save(customer);
 
-        String msg = block ? "Customer blocked successfully" : "Customer unblocked successfully";
+        String msg = block ? "User blocked successfully" : "User unblocked successfully";
         return ApiResponse.builder()
                 .message(msg)
                 .data(customer)

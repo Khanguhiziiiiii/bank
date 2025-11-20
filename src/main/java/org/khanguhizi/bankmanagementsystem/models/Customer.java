@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Builder;
 
 import java.time.LocalDate;
-import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name = "customer")
@@ -45,9 +44,9 @@ public class Customer {
     @Column(nullable = false, length = 255)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR default 'USER'")
-    private Role role;
+    @ManyToOne
+    @JoinColumn(name = "profile", referencedColumnName = "profileName")
+    private Profile profile;
 
     @Column(updatable = true, nullable = false, columnDefinition = "boolean default false")
     private Boolean deleted;

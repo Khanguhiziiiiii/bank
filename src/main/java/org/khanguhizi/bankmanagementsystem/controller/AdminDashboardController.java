@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.khanguhizi.bankmanagementsystem.models.Customer;
 import org.khanguhizi.bankmanagementsystem.service.AdminDashboardService;
+import org.khanguhizi.bankmanagementsystem.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,46 +33,46 @@ public class AdminDashboardController {
     @Operation(
             summary = "Fetches details of a customer"
     )
-    @GetMapping("/admin/fetchCustomers")
-    public ResponseEntity<ApiResponse> getAllCustomers(
+    @GetMapping("/admin/fetchAllUsers")
+    public ResponseEntity<ApiResponse> getAllUsers(
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        ApiResponse response = adminDashboardService.getAllCustomers(search, page, size);
+        ApiResponse response = adminDashboardService.getAllUsers(search, page, size);
         return ResponseEntity.ok(response);
     }
 
     @Operation(
-            summary = "Update details of a customer"
+            summary = "Update details of a user"
     )
-    @PutMapping("/admin/updateCustomer/{id}")
-    public ResponseEntity<ApiResponse> updateCustomer(
+    @PutMapping("/admin/updateUser/{id}")
+    public ResponseEntity<ApiResponse> updateUser(
             @PathVariable Integer id,
             @RequestBody Customer updatedData
     ) {
-        ApiResponse response = adminDashboardService.updateCustomer(id, updatedData);
+        ApiResponse response = adminDashboardService.updateUser(id, updatedData);
         return ResponseEntity.ok(response);
     }
 
     @Operation(
-            summary = "Soft deletes a customer"
+            summary = "Soft deletes a user"
     )
-    @DeleteMapping("/admin/deleteCustomer/{id}")
-    public ResponseEntity<ApiResponse> softDeleteCustomer(@PathVariable Integer id) {
-        ApiResponse response = adminDashboardService.softDeleteCustomer(id);
+    @DeleteMapping("/admin/deleteUser/{id}")
+    public ResponseEntity<ApiResponse> softDeleteUser(@PathVariable Integer id) {
+        ApiResponse response = adminDashboardService.softDeleteUser(id);
         return ResponseEntity.ok(response);
     }
 
     @Operation(
             summary = ("Blocks a customer")
     )
-    @PatchMapping("/admin/blockCustomer/{id}")
-    public ResponseEntity<ApiResponse> toggleBlockCustomer(
+    @PatchMapping("/admin/blockUser/{id}")
+    public ResponseEntity<ApiResponse> toggleBlockUser(
             @PathVariable Integer id,
             @RequestParam boolean block
     ) {
-        ApiResponse response = adminDashboardService.toggleBlockCustomer(id, block);
+        ApiResponse response = adminDashboardService.toggleBlockUser(id, block);
         return ResponseEntity.ok(response);
     }
 

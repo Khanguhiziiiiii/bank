@@ -46,19 +46,22 @@ public class SecurityConfiguration {
                                 "/resetPassword",
                                 "/forgotPassword"
                         ).permitAll()
-                                //.anyRequest().authenticated()
                         .requestMatchers(
                                 "/createAccountType",
-                                "/admin/*"
-                        ).hasRole("ADMIN")
+                                "/admin/**"
+                        ).hasAnyRole("ADMIN", "SUPERADMIN")
                         .requestMatchers(
                                 "/withdraw",
                                 "/deposit",
                                 "/transferFunds",
                                 "/checkBalance",
                                 "/isOverdraftOptedIn"
-                        ).hasRole("USER")
-                        .anyRequest().hasAnyRole("USER", "ADMIN")
+                        ).hasAnyRole("USER", "SUPERADMIN")
+                        .requestMatchers(
+                                "/superadmin/**"
+                        ).hasAnyRole("SUPERADMIN")
+                        // Any other request requires USER, ADMIN, or SUPERADMIN
+                        .anyRequest().hasAnyRole("USER", "ADMIN", "SUPERADMIN")
                 ) //all other requests require jwt authentication
                 .httpBasic(AbstractHttpConfigurer::disable)
 //                .formLogin(AbstractHttpConfigurer::disable)

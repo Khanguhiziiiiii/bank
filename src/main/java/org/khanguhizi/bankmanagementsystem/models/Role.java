@@ -1,6 +1,19 @@
 package org.khanguhizi.bankmanagementsystem.models;
 
-public enum Role {
-    USER,
-    ADMIN
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "Role")
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
+public class Role {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(unique = true, nullable = false )
+    private String role;
 }

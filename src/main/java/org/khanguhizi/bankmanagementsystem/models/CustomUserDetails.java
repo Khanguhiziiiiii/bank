@@ -1,14 +1,16 @@
 package org.khanguhizi.bankmanagementsystem.models;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;  //used to specify Roles
 import org.springframework.security.core.authority.SimpleGrantedAuthority; //implementation of GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Getter
 public class CustomUserDetails implements UserDetails {
 
     private final Customer customer;
@@ -35,8 +37,14 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + customer.getRole()));
+        String profileName = customer.getProfile().getProfileName();
+//        var roles = new ArrayList<SimpleGrantedAuthority>();// e.g. "ADMIN"
+        return List.of(new SimpleGrantedAuthority("ROLE_" + profileName.toUpperCase()));
+        // now give me the roles under this user's profile
+//        var profiles = profileService.getRolesInProfile();
+
     }
+
 
         /*
             tells Spring what permissions (roles) the user has.
@@ -75,10 +83,8 @@ public class CustomUserDetails implements UserDetails {
         //You might disable accounts after registration or for suspicious activity.
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-        //Provides access to the full Customer object.
+    //Provides access to the full Customer object.
         //Useful if you need to retrieve more than just username/password (e.g., ID, email) later in the app.
+
 
 }

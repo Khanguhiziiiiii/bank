@@ -3,15 +3,14 @@ package org.khanguhizi.bankmanagementsystem.dto;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
-public class RegisterRequest {
-    private String firstName;
-    private String lastName;
+public class CreateAdminRequest {
+    private String username;
+    private String password;
+    private String profileName;
     private String email;
     private String phoneNumber;
     private String nationalId;
-    private LocalDate dateOfBirth;
-    private String username;
-    private String password;
 }

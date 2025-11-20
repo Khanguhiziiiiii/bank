@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import lombok.*;
 
 
 @Service
@@ -24,6 +23,7 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
+    private final ProfileRepository profileRepository;
 
     public ApiResponse register(RegisterRequest request){
         //Check if customer exists
@@ -48,6 +48,10 @@ public class CustomerService {
             throw new RuntimeException("Weak password! Must be at least 8 characters long, contain uppercase, lowercase, number, and special character.");
         }
 
+        Profile defaultProfile = profileRepository.findByProfileName("USER")
+                .orElseThrow(() -> new RuntimeException("Default role USER not found in database!"));
+
+
         Customer customer = Customer.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -55,9 +59,9 @@ public class CustomerService {
                 .phoneNumber(request.getPhoneNumber())
                 .nationalId(request.getNationalId())
                 .dateOfBirth(request.getDateOfBirth())
-                .role(Role.USER)
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .profile(defaultProfile)
                 .blocked(false)
                 .deleted(false)
                 .build();
@@ -71,7 +75,7 @@ public class CustomerService {
        registerResponse.setNationalId(request.getNationalId());
        registerResponse.setDateOfBirth(request.getDateOfBirth());
        registerResponse.setUsername(request.getUsername());
-       registerResponse.setRole(String.valueOf(customer.getRole()));
+       registerResponse.setRole(customer.getProfile().getProfileName());
        return ApiResponse.builder()
                .message("Successfully registered!")
                .data(registerResponse)
@@ -90,6 +94,8 @@ public class CustomerService {
 
         Customer customerId = customer;
 
+        Profile profile = customer.getProfile();
+
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setFirstName(customer.getFirstName());
         loginResponse.setLastName(customer.getLastName());
@@ -98,8 +104,9 @@ public class CustomerService {
         loginResponse.setNationalId(customer.getNationalId());
         loginResponse.setDateOfBirth(customer.getDateOfBirth());
         loginResponse.setUsername(customer.getUsername());
+        loginResponse.setRole(customer.getProfile().getProfileName());
         loginResponse.setCustomerId(customerId.getId());
-        loginResponse.setRole(customer.getRole().name());
+
         loginResponse.setToken(jwtService.generateToken(new org.springframework.security.core.userdetails.User(
                 customer.getUsername(),
                 customer.getPassword(),
@@ -108,7 +115,12 @@ public class CustomerService {
 
         if (!passwordEncoder.matches(request.getPassword(), customer.getPassword())) {
             throw new InvalidCredentialsException("Invalid email or password!");
-        }else{
+        } else if (customer.getBlocked()==true) {
+            throw new InvalidAccessException("Blocked user!");
+        } else if (customer.getDeleted()==true) {
+            throw new InvalidAccessException("Deleted account!");
+        }
+        else{
             return ApiResponse.builder()
                     .message("Login Successful!")
                     .data(loginResponse)
