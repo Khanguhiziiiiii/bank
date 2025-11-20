@@ -49,7 +49,6 @@ public class SystemStartupConfiguration {
                 profile.setProfile(profileRepository.findByProfileName("SUPERADMIN").get());
                 customerRepository.save(profile);
             }
-
         };
     }
 }

@@ -5,4 +5,5 @@ import lombok.*;
 @Data
 public class ForgotPasswordRequest {
     private String phoneNumber;
+    private String email;
 }

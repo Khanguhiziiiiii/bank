@@ -23,7 +23,10 @@ public class ForgotPasswordService {
     @Autowired
     private SMSService smsService;
 
-    public ApiResponse forgotPassword(ForgotPasswordRequest request) {
+    @Autowired
+    private EmailService emailService;
+
+    public ApiResponse sendOTPBySMS(ForgotPasswordRequest request) {
         var customer = customerRepository.findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
@@ -44,6 +47,30 @@ public class ForgotPasswordService {
         return ApiResponse.builder()
                 .status(String.valueOf(true))
                 .message("OTP sent successfully to " + request.getPhoneNumber())
+                .build();
+    }
+
+    public ApiResponse sendOTPByEmail(ForgotPasswordRequest request) {
+        var customer = customerRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        String otp = String.format("%06d", new Random().nextInt(999999));
+
+        otpRepository.deleteByEmail(request.getEmail());
+
+        OTP otpEntity = new OTP();
+        otpEntity.setEmail(request.getEmail());
+        otpEntity.setOtpCode(otp);
+        otpEntity.setCreatedAt(LocalDateTime.now());
+        otpEntity.setExpiresAt(LocalDateTime.now().plusMinutes(5));
+
+        otpRepository.save(otpEntity);
+
+        emailService.sendOtp(request.getEmail());
+
+        return ApiResponse.builder()
+                .status(String.valueOf(true))
+                .message("OTP sent successfully to " + request.getEmail())
                 .build();
     }
 }

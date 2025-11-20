@@ -29,7 +29,7 @@ public class ResetPasswordService {
     @Transactional
     public ApiResponse resetPassword(ResetPasswordRequest request) {
         OTP otpRecord = otpRepository.findByPhoneNumber(request.getPhoneNumber())
-                .orElseThrow(() -> new RuntimeException("No OTP found for this number"));
+                .orElseThrow(() -> new RuntimeException("No OTP found for this user"));
 
         if (otpRecord.getExpiresAt().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("OTP expired");

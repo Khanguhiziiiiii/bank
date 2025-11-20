@@ -13,6 +13,7 @@ public class OTP {
     private Long id;
 
     private String phoneNumber;
+    private String email;
     private String otpCode;
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;

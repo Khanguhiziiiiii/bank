@@ -44,7 +44,8 @@ public class SecurityConfiguration {
                                 "/v3/api-docs/**",
                                 "/swagger-ui/index.html",
                                 "/resetPassword",
-                                "/forgotPassword"
+                                "/sendOTPBySMS",
+                                "/sendOTPByEmail"
                         ).permitAll()
                         .requestMatchers(
                                 "/createAccountType",

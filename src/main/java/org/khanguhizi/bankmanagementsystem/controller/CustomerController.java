@@ -53,9 +53,18 @@ public class CustomerController {
     @Operation(
             summary = "Forgot Password - Send OTP via SMS"
     )
-    @PostMapping("/forgotPassword")
-    public ResponseEntity<org.khanguhizi.bankmanagementsystem.dto.ApiResponse> forgotPassword(@RequestBody  ForgotPasswordRequest request) {
-        var response = forgotPasswordService.forgotPassword(request);
+    @PostMapping("/sendOTPBySMS")
+    public ResponseEntity<org.khanguhizi.bankmanagementsystem.dto.ApiResponse> sendOTPBySMS(@RequestBody  ForgotPasswordRequest request) {
+        var response = forgotPasswordService.sendOTPBySMS(request);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Forgot Password - Send OTP via Email"
+    )
+    @PostMapping("/sendOTPByEmail")
+    public ResponseEntity<org.khanguhizi.bankmanagementsystem.dto.ApiResponse> senOTPByEmail(@RequestBody  ForgotPasswordRequest request) {
+        var response = forgotPasswordService.sendOTPByEmail(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

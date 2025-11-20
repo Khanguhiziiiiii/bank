@@ -8,5 +8,4 @@ import lombok.*;
 public class ProfileRoleResponse {
     private String profileName;
     private String role;
-
 }

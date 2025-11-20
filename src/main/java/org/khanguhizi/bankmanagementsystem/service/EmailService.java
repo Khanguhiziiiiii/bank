@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -15,8 +17,7 @@ import java.util.Map;
 import java.util.Random;
 
 @Service
-public class SMSService {
-
+public class EmailService {
     @Autowired
     private RestTemplate restTemplate;
 
@@ -26,61 +27,57 @@ public class SMSService {
     @Autowired
     private OTPRepository otpRepository;
 
-    @Value("${cic.sms.url}")
-    private String smsApiUrl;
+    @Value("${cic.email.url}")
+    private String emailApiUrl;
 
-    public boolean sendOtp(String phoneNumber) {
-        try {
-            // Fetch customer
-            Customer customer = customerRepository.findByPhoneNumber(phoneNumber)
-                    .orElseThrow(() -> new RuntimeException("Customer with phone number " + phoneNumber +"not found"));
+    public boolean sendOtp(String email){
+        try{
+            Customer customer = customerRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Customer with email " + email + " not found"));
 
-            // Generate OTP
             String otpCode = String.format("%06d", new Random().nextInt(999999));
 
-            OTP otp = otpRepository.findByPhoneNumber(phoneNumber)
-                    .orElseGet(() -> new OTP()); // create if not exists
+            OTP otp = otpRepository.findByEmail(email)
+                    .orElseGet(() -> new OTP());
 
-            otp.setPhoneNumber(phoneNumber);
-            otp.setEmail(customer.getEmail());
+            otp.setPhoneNumber(customer.getPhoneNumber());
+            otp.setEmail(email);
             otp.setOtpCode(otpCode);
             otp.setCreatedAt(LocalDateTime.now());
             otp.setExpiresAt(LocalDateTime.now().plusMinutes(5));
 
             otpRepository.save(otp);
 
-            // Build payload JSON
-            Map<String, Object> payload = new HashMap<>();
-            payload.put("phone", customer.getPhoneNumber());
-            payload.put("template", "OTP");
-            payload.put("message", "Your OTP is " + otpCode);
+            MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
+            formData.add("email", customer.getEmail());
+            formData.add("subject", "You are welcome to CIC");
+            formData.add("message", "Your OTP is " + otpCode);
+            formData.add("template", "OTP");
 
-            Map<String, String> data = new HashMap<>();
-            data.put("otp", otpCode);
-            payload.put("data", data);
+            Map<String, Object> templateVars = new HashMap<>();
+            templateVars.put("otpCode", otpCode);
+            templateVars.put("expiryMinutes", 5);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setContentType(MediaType.parseMediaType("multipart/form-data"));
             headers.set("Skip-Encryption", "true");
 
-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(payload, headers);
+            HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(formData, headers);
 
-            // Send request
             ResponseEntity<String> response = restTemplate.exchange(
-                    smsApiUrl,
+                    emailApiUrl,
                     HttpMethod.POST,
                     entity,
                     String.class
             );
 
-            if (response.getStatusCode().is2xxSuccessful()) {
+            if (response.getStatusCode().is2xxSuccessful()){
                 System.out.println("OTP sent successfully: " + response.getBody());
                 return true;
             } else {
-                System.err.println("Failed to send OTP: " + response.getStatusCode());
+                System.out.println("Failed to send OTP: " + response.getBody());
                 return false;
             }
-
         } catch (Exception e) {
             System.err.println("Error sending OTP: " + e.getMessage());
             return false;

@@ -53,4 +53,35 @@ public class ProfileRoleController {
         var list = profileRoleService.getAllProfileRoles();
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+
+    @PostMapping("/removeRoleFromProfile")
+    public ResponseEntity<ApiResponse> removeRoleFromProfile(
+            @RequestBody ProfileRoleRequest request) {
+
+        ApiResponse response = profileRoleService.removeRoleFromProfile(request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/fetchProfileRoles")
+    public ResponseEntity<ApiResponse> fetchProfileRoles(
+            @RequestBody ProfileRoleRequest request) {
+
+        ApiResponse response = profileRoleService.fetchProfileRoles(request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/fetchRoles")
+    public ResponseEntity<ApiResponse> fetchRoles() {
+        ApiResponse response = profileRoleService.fetchRoles();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+    @GetMapping("/fetchProfiles")
+    public ResponseEntity<ApiResponse> fetchProfiles() {
+
+        ApiResponse response = profileRoleService.fetchProfiles();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }
+

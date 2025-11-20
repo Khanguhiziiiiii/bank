@@ -14,4 +14,10 @@ public interface OTPRepository extends JpaRepository<OTP, Long> {
     @Transactional
     @Query("DELETE FROM OTP o WHERE o.phoneNumber = :phoneNumber")
     void deleteByPhoneNumber(String phoneNumber);
+    Optional<OTP> findByEmail(String email);
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM OTP o WHERE o.phoneNumber = :email")
+    void deleteByEmail(String email);
+
 }
