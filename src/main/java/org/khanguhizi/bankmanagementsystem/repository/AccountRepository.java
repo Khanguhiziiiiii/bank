@@ -1,5 +1,6 @@
 package org.khanguhizi.bankmanagementsystem.repository;
 
+import org.khanguhizi.bankmanagementsystem.models.AccountType;
 import org.khanguhizi.bankmanagementsystem.models.Accounts;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,5 +12,5 @@ public interface AccountRepository extends JpaRepository<Accounts, Integer>{
     Optional<Accounts> findByAccountNumber(String accountNumber);
     List<Accounts> findAll();
 
-    boolean existsByAccountType(String accountType);
+    boolean existsByAccountType(AccountType accountType);
 }

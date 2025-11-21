@@ -69,7 +69,7 @@ public class AccountTypeService {
         AccountType accountType = accountTypeRepository.findById(typeId)
                 .orElseThrow(() -> new RuntimeException("Account Type not found"));
 
-        boolean assigned = accountRepository.existsByAccountType(String.valueOf(accountType));
+        boolean assigned = accountRepository.existsByAccountType(accountType);
         if (assigned) {
             throw new RuntimeException("Cannot delete: Account type is assigned to one or more accounts");
         }
