@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.khanguhizi.bankmanagementsystem.dto.*;
 import org.khanguhizi.bankmanagementsystem.service.ProfileRoleService;
 import org.khanguhizi.bankmanagementsystem.service.ProfileService;
+import org.khanguhizi.bankmanagementsystem.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,8 @@ public class ProfileRoleController {
     private ProfileService profileService;
     @Autowired
     private ProfileRoleService profileRoleService;
+    @Autowired
+    private RoleService roleService;
 
     @Operation(
             summary = "creates profiles"
@@ -81,11 +84,18 @@ public class ProfileRoleController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PostMapping("/superadmin/")
+    @PostMapping("/superadmin/assignRolesToProfiles")
     public ResponseEntity<ApiResponse> assignRolesToProfile(
             @RequestBody ProfileRoleRequest request) {
         var assignRolesRes = profileRoleService.assignRoleToProfile(request);
         return new ResponseEntity<>(assignRolesRes, HttpStatus.OK);
+    }
+
+    @PostMapping("/superadmin/createRole")
+    public ResponseEntity<ApiResponse> createRoles(
+            @RequestBody RoleRequest request) {
+        var createRolesRes = roleService.createRole(request);
+        return new ResponseEntity<>(createRolesRes, HttpStatus.CREATED);
     }
 }
 

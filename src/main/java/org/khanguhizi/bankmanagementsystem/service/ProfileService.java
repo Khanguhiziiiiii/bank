@@ -14,8 +14,8 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
 
     public ApiResponse createProfile(ProfileRequest request) {
-        Optional<Profile> existingRole = profileRepository.findByProfileName(request.getProfileName());
-        if (existingRole.isPresent()) {
+        Optional<Profile> existingProfile = profileRepository.findByProfileName(request.getProfileName());
+        if (existingProfile.isPresent()) {
             throw new RuntimeException("Profile already exists");
         }
 
