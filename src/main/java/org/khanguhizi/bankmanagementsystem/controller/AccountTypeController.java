@@ -8,6 +8,7 @@ import org.khanguhizi.bankmanagementsystem.service.AccountTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 //@CrossOrigin(originPatterns = "*", origins = {"*"}, allowedHeaders = {"*"})
@@ -22,6 +23,7 @@ public class AccountTypeController {
             summary = "Creates a new account type",
             description = "Creates account types from which the customers are supposed to choose from"
     )
+    @PreAuthorize("hasRole('CREATE_ACCOUNT_TYPES')")
     @PostMapping ("/createAccountType")
     public ResponseEntity <org.khanguhizi.bankmanagementsystem.dto.ApiResponse> createAccountType(@RequestBody AccountTypeRequest accountTypeRequest) {
         var createAccountTypeRes = accountTypeService.accountType(accountTypeRequest);
@@ -32,10 +34,21 @@ public class AccountTypeController {
             summary = "Fetches account types present in the database",
             description = "Restricts account creation to only the account types present in the databased"
     )
+    @PreAuthorize("hasRole('READ_ACCOUNT_TYPES')")
     @GetMapping("/fetchAccountTypes")
     public ResponseEntity<ApiResponse> fetchAllAccountTypes() {
         var response = accountTypeService.fetchAllAccountTypes();
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Deletes an account type if not assigned to any accounts"
+    )
+    @PreAuthorize("hasRole('DELETE_ACCOUNT_TYPES')")
+    @DeleteMapping("/admin/deleteAccountType/{accountTypeId}")
+    public ResponseEntity<ApiResponse> deleteAccountType(@PathVariable Integer accountTypeId) {
+        ApiResponse response = accountTypeService.deleteAccountType(accountTypeId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

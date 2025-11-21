@@ -12,4 +12,9 @@ public interface ProfileRoleRepository extends JpaRepository<ProfileRole,Integer
     Optional<ProfileRole> findByProfileAndRole(Profile profile, Role role);
 
     List<ProfileRole> findByProfile(Profile profile);
+    List<ProfileRole> findByRole(Role role);
+
+    boolean existsByRole(Role role);
+    boolean existsByProfile(Profile profile);
+
 }

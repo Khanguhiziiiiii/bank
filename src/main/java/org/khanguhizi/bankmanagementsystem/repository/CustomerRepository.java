@@ -17,6 +17,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer>{
  Optional<Customer> findByPhoneNumber(String phoneNumber);
  List<Customer> findAll();
  Page<Customer> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String firstName, String lastName, String email, Pageable pageable);
+ List<Customer> findByProfile(String profile);
 
     boolean existsByEmail(String email);
 

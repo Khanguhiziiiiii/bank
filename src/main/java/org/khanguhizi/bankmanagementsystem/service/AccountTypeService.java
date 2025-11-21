@@ -17,6 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountTypeService {
     private final AccountTypeRepository accountTypeRepository;
+    private final AccountRepository accountRepository;
 
     public final ApiResponse accountType(AccountTypeRequest request) {
         Optional<AccountType> accountType = accountTypeRepository.findByAccountType(request.getAccountType());
@@ -63,4 +64,22 @@ public class AccountTypeService {
                 .status(String.valueOf(HttpStatus.OK.value()))
                 .build();
     }
+
+    public ApiResponse deleteAccountType(Integer typeId) {
+        AccountType accountType = accountTypeRepository.findById(typeId)
+                .orElseThrow(() -> new RuntimeException("Account Type not found"));
+
+        boolean assigned = accountRepository.existsByAccountType(String.valueOf(accountType));
+        if (assigned) {
+            throw new RuntimeException("Cannot delete: Account type is assigned to one or more accounts");
+        }
+
+        accountTypeRepository.delete(accountType);
+
+        return ApiResponse.builder()
+                .message("Account type deleted successfully")
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
 }

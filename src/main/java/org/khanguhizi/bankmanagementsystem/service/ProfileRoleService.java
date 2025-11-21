@@ -165,5 +165,56 @@ public class ProfileRoleService {
                 .build();
     }
 
+    public ApiResponse deleteRole(Long roleId) {
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        boolean hasAssignments = profileRoleRepository.existsByRole(role);
+        if (hasAssignments) {
+            throw new RuntimeException("Role cannot be deleted because it is assigned to profiles");
+        }
+
+        roleRepository.delete(role);
+
+        return ApiResponse.builder()
+                .message("Role deleted successfully")
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
+    public ApiResponse deleteProfile(Long profileId) {
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+
+        boolean hasRoleMappings = profileRoleRepository.existsByProfile(profile);
+        if (hasRoleMappings) {
+            throw new RuntimeException("Profile cannot be deleted because roles are assigned to it");
+        }
+
+        profileRepository.delete(profile);
+
+        return ApiResponse.builder()
+                .message("Profile deleted successfully")
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
+    public ApiResponse fetchProfilesAssignedToRole(Long roleId) {
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        List<ProfileRole> mappings = profileRoleRepository.findByRole(role);
+
+        List<Profile> profiles = mappings.stream()
+                .map(ProfileRole::getProfile)
+                .collect(Collectors.toList());
+
+        return ApiResponse.builder()
+                .message("Fetched profiles assigned to the role successfully")
+                .data(profiles)
+                .status(String.valueOf(HttpStatus.OK))
+                .build();
+    }
+
 }
 

@@ -9,6 +9,7 @@ import org.khanguhizi.bankmanagementsystem.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 //@CrossOrigin(originPatterns = "*", origins = {"*"}, allowedHeaders = {"*"})
@@ -26,6 +27,7 @@ public class TransactionController {
             summary = "Facilitates deposit transactions",
             description = "Accepts deposit amount, adds amount to current balance, displays updated balance"
     )
+    @PreAuthorize("hasRole('CREATE_TRANSACTION')")
     @PostMapping ("/deposit")
     public ResponseEntity<ApiResponse> deposit(@RequestBody TransactionRequest transactionRequest){
         var depositRes= transactionService.deposit(transactionRequest);
@@ -36,12 +38,14 @@ public class TransactionController {
             summary = "Facilitates withdraw transactions",
             description = "Accepts withdrawal amount, subtracts the amount from current balance, displays the updated balance"
     )
+    @PreAuthorize("hasRole('CREATE_TRANSACTION')")
     @PostMapping ("/withdraw")
     public ResponseEntity<ApiResponse> withdraw(@RequestBody TransactionRequest transactionRequest){
         var withdrawRes= transactionService.withdraw(transactionRequest);
         return new ResponseEntity<>(withdrawRes, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('UPDATE_ACCOUNT')")
     @PostMapping("/isOverdraftOptedIn")
     public ResponseEntity<ApiResponse> isOverdraftOptedIn(@RequestBody TransactionRequest transactionRequest){
         var overdraftRes= transactionService.isOverdraftOptedIn(transactionRequest);
@@ -52,6 +56,7 @@ public class TransactionController {
             summary = "Facilitates check balance transactions",
             description = "Allows user to see current balance"
     )
+    @PreAuthorize("hasRole('READ_ACCOUNT')")
     @PostMapping("/checkBalance")
     public ResponseEntity<ApiResponse> checkBalance(@RequestBody BalanceRequest balanceRequest){
         var checkBalanceRes= transactionService.checkBalance(balanceRequest);
@@ -62,6 +67,7 @@ public class TransactionController {
             summary = "Facilitates transfer of funds between accounts",
             description = "Allows user to input the recipient account and amount to send, then transfer the funds to the recipient account"
     )
+    @PreAuthorize("hasRole('CREATE_TRANSACTION')")
     @PostMapping ("/transferFunds")
     public ResponseEntity<ApiResponse> transferFunds(@RequestBody TransferFundsRequest transferFundsRequest){
         var transferFundsRes= transactionService.transferFunds(transferFundsRequest);
@@ -72,6 +78,7 @@ public class TransactionController {
             summary = "Fetch account statement",
             description = "Retrieves all transactions for a specific account, similar to a bank statement"
     )
+    @PreAuthorize("hasRole('READ_ACCOUNT')")
     @GetMapping("/account/{accountNumber}/statement")
     public ResponseEntity<ApiResponse> getAccountStatement(@PathVariable String accountNumber) {
 
@@ -83,12 +90,18 @@ public class TransactionController {
             summary = "Manage transaction costs",
             description = "Allows admin to set and update transaction costs"
     )
+    @PreAuthorize("hasRole('UPDATE_TRANSACTION_COSTS')")
     @PostMapping("/admin/updateTransactionCosts")
     public ResponseEntity<ApiResponse> updateTransactionCosts(@RequestBody TransactionCostsRequest transactionCostsRequest){
         var updateTransactionCostRes =transactionCostsService.addCost(transactionCostsRequest);
         return new ResponseEntity<>(updateTransactionCostRes, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "previews transaction cost to be charged",
+            description = "displays the transaction cost based on the type of transaction and amount to be transacted"
+    )
+    @PreAuthorize("hasRole('READ_TRANSACTION_COSTS')")
     @GetMapping("/charges")
     public ResponseEntity<ApiResponse> getTransactionCharge(
             @RequestParam double amount,
