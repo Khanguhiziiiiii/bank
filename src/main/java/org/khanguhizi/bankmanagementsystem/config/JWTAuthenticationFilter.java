@@ -1,5 +1,6 @@
 package org.khanguhizi.bankmanagementsystem.config;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.khanguhizi.bankmanagementsystem.service.CustomUserDetailsService;
 import org.khanguhizi.bankmanagementsystem.service.JWTService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
@@ -98,43 +101,33 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
             if (jwtService.isTokenValid(jwt, userDetails)) {
 
-                /*
-                Checks whether the token is:
-                    Correctly signed with your secret key.
-                    Not expired.
-                    Matches the loaded user.
-                 */
+                //  Read all claims from the token
+                Claims claims = jwtService.extractAllClaims(jwt);
 
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
+                // Extract authorities list
+                List<?> roles = claims.get("authorities", List.class);
 
-                        /*
-                            Creates a new UsernamePasswordAuthenticationToken, which represents a fully authenticated user.
-                            The parameters:
-                                userDetails → the principal (the authenticated user)
-                                null → no credentials are needed because authentication is via token
-                                userDetails.getAuthorities() → list of roles or permissions
-                         */
+                List<SimpleGrantedAuthority> authorities = roles.stream()
+                        .map(Object::toString)           // Force string conversion
+                        .map(SimpleGrantedAuthority::new)
+                        .toList();
+
+                //  Create authentication token with JWT authorities
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                authorities   // 🚀 use JWT authorities, not DB roles.
+                        );
+
+                authToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
                 );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                /*
-                    Adds extra info like:
-                        Client IP address
-                        Session ID
-                        Helps with security auditing or advanced logging.
-                 */
 
-
+                //  Store authentication in security context
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-
-                /*
-                    Saves the authenticated user in Spring Security’s SecurityContext.
-                    After this, the user is officially logged in for this request.
-                    Controllers can now access the user via @AuthenticationPrincipal or SecurityContextHolder.getContext().
-                 */
             }
+
         }
 
 

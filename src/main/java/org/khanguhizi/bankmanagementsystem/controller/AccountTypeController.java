@@ -23,7 +23,7 @@ public class AccountTypeController {
             summary = "Creates a new account type",
             description = "Creates account types from which the customers are supposed to choose from"
     )
-    @PreAuthorize("hasRole('CREATE_ACCOUNT_TYPES')")
+@PreAuthorize("hasRole('CREATE_ACCOUNT_TYPES')")
     @PostMapping ("/createAccountType")
     public ResponseEntity <org.khanguhizi.bankmanagementsystem.dto.ApiResponse> createAccountType(@RequestBody AccountTypeRequest accountTypeRequest) {
         var createAccountTypeRes = accountTypeService.accountType(accountTypeRequest);
@@ -34,7 +34,7 @@ public class AccountTypeController {
             summary = "Fetches account types present in the database",
             description = "Restricts account creation to only the account types present in the databased"
     )
-    @PreAuthorize("hasRole('READ_ACCOUNT_TYPES')")
+@PreAuthorize("hasRole('READ_ACCOUNT_TYPES')")
     @GetMapping("/fetchAccountTypes")
     public ResponseEntity<ApiResponse> fetchAllAccountTypes() {
         var response = accountTypeService.fetchAllAccountTypes();
@@ -44,8 +44,8 @@ public class AccountTypeController {
     @Operation(
             summary = "Deletes an account type if not assigned to any accounts"
     )
-    @PreAuthorize("hasRole('DELETE_ACCOUNT_TYPES')")
-    @DeleteMapping("/admin/deleteAccountType/{accountTypeId}")
+@PreAuthorize("hasRole('DELETE_ACCOUNT_TYPES')")
+    @DeleteMapping("/deleteAccountType/{accountTypeId}")
     public ResponseEntity<ApiResponse> deleteAccountType(@PathVariable Integer accountTypeId) {
         ApiResponse response = accountTypeService.deleteAccountType(accountTypeId);
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -238,8 +238,7 @@ public class InitController {
 
                 Method-Level Security
         Use annotations like:
-            @PreAuthorize("hasRole('ADMIN')")
-            @Secured("ROLE_USER")
+// @PreAuthorize("hasRole('ADMIN')")            @Secured("ROLE_USER")
             @RolesAllowed("ADMIN")
 
 

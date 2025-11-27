@@ -51,9 +51,11 @@ public class ForgotPasswordService {
     }
 
     public ApiResponse sendOTPByEmail(ForgotPasswordRequest request) {
+
         var customer = customerRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
+        // Generate OTP
         String otp = String.format("%06d", new Random().nextInt(999999));
 
         otpRepository.deleteByEmail(request.getEmail());
@@ -66,10 +68,11 @@ public class ForgotPasswordService {
 
         otpRepository.save(otpEntity);
 
-        emailService.sendOtp(request.getEmail());
+        // Send OTP email
+        emailService.sendOtp(request.getEmail(), otp);
 
         return ApiResponse.builder()
-                .status(String.valueOf(true))
+                .status("true")
                 .message("OTP sent successfully to " + request.getEmail())
                 .build();
     }

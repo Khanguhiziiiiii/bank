@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.khanguhizi.bankmanagementsystem.dto.*;
-import org.khanguhizi.bankmanagementsystem.models.Accounts;
 import org.khanguhizi.bankmanagementsystem.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +27,7 @@ public class AccountController {
             summary = "Create a new bank account",
             description = "Creates a new bank account for an authenticated customer."
     )
-    @PreAuthorize("hasRole('CREATE_ACCOUNT')")
+@PreAuthorize("hasRole('CREATE_ACCOUNT')")
     @PostMapping ("/createAccount")
     public ResponseEntity<org.khanguhizi.bankmanagementsystem.dto.ApiResponse> createAccount(@RequestBody AccountRequest accountRequest){
         var createAccountRes = accountService.account(accountRequest);
@@ -39,7 +38,7 @@ public class AccountController {
             summary = "Fetch customer accounts",
             description = "Fetches all accounts associated with a given customer ID."
     )
-    @PreAuthorize("hasRole('READ_ACCOUNT')")
+@PreAuthorize("hasRole('READ_ACCOUNT')")
     @GetMapping("/customer/{customerId}/accounts")
     public ResponseEntity<ApiResponse> fetchAccounts(@PathVariable int customerId) {
 
@@ -53,7 +52,7 @@ public class AccountController {
     @Operation(
             summary = "fetches details about an account"
     )
-    @PreAuthorize("hasRole('READ_ACCOUNT')")
+@PreAuthorize("hasRole('READ_ACCOUNT')")
     @GetMapping("/get/account{accountId}/details")
     public ResponseEntity<ApiResponse> getAccountDetails(
             @PathVariable Integer accountId
@@ -65,8 +64,8 @@ public class AccountController {
     @Operation(
             summary = "updates the status of an account (active or inactive)"
     )
-    @PreAuthorize("hasRole('UPDATE_ACCOUNT')")
-    @PatchMapping("/admin/update/account{accountId}/status")
+@PreAuthorize("hasRole('UPDATE_ACCOUNT')")
+    @PatchMapping("/update/account{accountId}/status")
     public ResponseEntity<ApiResponse> updateAccountStatus(
             @PathVariable Integer accountId,
             @RequestParam boolean active

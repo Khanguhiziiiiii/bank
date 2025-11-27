@@ -10,6 +10,8 @@ import org.khanguhizi.bankmanagementsystem.repository.CustomerRepository;
 import org.khanguhizi.bankmanagementsystem.repository.ProfileRepository;
 import org.khanguhizi.bankmanagementsystem.repository.ProfileRoleRepository;
 import org.khanguhizi.bankmanagementsystem.repository.RoleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,9 @@ public class ProfileRoleService {
     private final RoleRepository roleRepository;
     private final ProfileRoleRepository profileRoleRepository;
     private final CustomerRepository customerRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    @Lazy
+    private  PasswordEncoder passwordEncoder;
 
     public ApiResponse createAdmin(CreateAdminRequest request) {
 
@@ -151,7 +155,7 @@ public class ProfileRoleService {
                 .build();
     }
 
-    public ApiResponse fetchProfileRoles(ProfileRoleRequest request) {
+    public ApiResponse fetchRolesAssignedToAProfile(ProfileRoleRequest request) {
 
         Profile profile = profileRepository.findById(request.getProfileId())
                 .orElseThrow(() -> new RuntimeException("Profile not found"));
@@ -215,6 +219,5 @@ public class ProfileRoleService {
                 .status(String.valueOf(HttpStatus.OK))
                 .build();
     }
-
 }
 

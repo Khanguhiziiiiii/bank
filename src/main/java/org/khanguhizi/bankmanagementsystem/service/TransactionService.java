@@ -56,7 +56,6 @@ public class TransactionService {
                     .status(String.valueOf(HttpStatus.OK))
                     .build();
         }
-
         account.setOverdraftOptedIn(true);
         accountRepository.save(account);
 
@@ -161,7 +160,7 @@ public class TransactionService {
         if (accountTypeId == 3) {
             double maxAllowedWithdrawal = account.getBalance() * 0.10;
             if (amount + transactionCost> maxAllowedWithdrawal) {
-                throw new InvalidEntryException("Amount exceeds what is allowed! Maximum deposit is " + maxAllowedWithdrawal);
+                throw new InvalidEntryException("Amount exceeds what is allowed! Maximum allowed withdrawal is " + maxAllowedWithdrawal);
             }
         }
 

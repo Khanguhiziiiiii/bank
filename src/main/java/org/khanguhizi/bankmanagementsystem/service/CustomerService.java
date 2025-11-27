@@ -10,6 +10,7 @@ import org.khanguhizi.bankmanagementsystem.utilities.PasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,8 @@ public class CustomerService {
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
     private final ProfileRepository profileRepository;
+    private final ProfileRoleService profileRoleService;
+    private final ProfileRoleRepository profileRoleRepository;
 
     public ApiResponse register(RegisterRequest request){
         //Check if customer exists
@@ -104,14 +107,21 @@ public class CustomerService {
         loginResponse.setNationalId(customer.getNationalId());
         loginResponse.setDateOfBirth(customer.getDateOfBirth());
         loginResponse.setUsername(customer.getUsername());
-        loginResponse.setRole(customer.getProfile().getProfileName());
+        loginResponse.setProfile(customer.getProfile().getProfileName());
         loginResponse.setCustomerId(customerId.getId());
 
-        loginResponse.setToken(jwtService.generateToken(new org.springframework.security.core.userdetails.User(
-                customer.getUsername(),
-                customer.getPassword(),
-                new ArrayList<>()
-        )));
+        loginResponse.setToken(
+                jwtService.generateToken(
+                        new org.springframework.security.core.userdetails.User(
+                                customer.getUsername(),
+                                customer.getPassword(),
+                                profileRoleRepository.findByProfile_ProfileName(profile.getProfileName())
+                                        .stream()
+                                        .map(pr -> "ROLE_" + pr.getRole().getRole().toUpperCase())
+                                        .map(SimpleGrantedAuthority::new)
+                                        .toList()
+                        )
+                ));
 
         if (!passwordEncoder.matches(request.getPassword(), customer.getPassword())) {
             throw new InvalidCredentialsException("Invalid email or password!");

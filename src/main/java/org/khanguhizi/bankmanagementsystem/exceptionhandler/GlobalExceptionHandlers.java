@@ -12,8 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.HashMap;
 import java.util.Map;
-
-@RestControllerAdvice
+//@RestControllerAdvice
 public class GlobalExceptionHandlers {
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ApiResponse> handleInvalidCredentials(InvalidCredentialsException invalidCredentialsException) {
@@ -33,8 +32,9 @@ public class GlobalExceptionHandlers {
         return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(NoAccountsFoundException.class)
+    @ExceptionHandler(exception = {NoAccountsFoundException.class })
     public ResponseEntity<ApiResponse> handleNoAccountsFound(NoAccountsFoundException noAccountsFoundException) {
+        noAccountsFoundException.printStackTrace();
         ApiResponse response = ApiResponse.builder()
                 .status(String.valueOf(HttpStatus.BAD_REQUEST))
                 .message(noAccountsFoundException.getMessage())
@@ -119,7 +119,7 @@ public class GlobalExceptionHandlers {
         return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(InvalidAccessException.class)
+//    @ExceptionHandler(InvalidAccessException.class)
     public ResponseEntity<ApiResponse> handleInvalidAccessException(InvalidAccessException invalidAccessException) {
         ApiResponse  response = ApiResponse.builder()
                 .status(String.valueOf(HttpStatus.UNAUTHORIZED))

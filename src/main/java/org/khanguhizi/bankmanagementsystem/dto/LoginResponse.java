@@ -18,6 +18,6 @@ public class LoginResponse {
     private String nationalId;
     private LocalDate dateOfBirth;
     private String username;
-    private String role;
+    private String profile;
     private String token;
 }

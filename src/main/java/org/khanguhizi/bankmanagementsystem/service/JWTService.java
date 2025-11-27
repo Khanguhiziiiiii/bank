@@ -54,25 +54,13 @@ public class JWTService {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
 
-                /*
-                    This is where we store extra information (metadata) that will be embedded inside the JWT payload — for example, user’s role, username, email, etc.
-                    These are called claims in JWT terminology.
-                 */
-
-        if (!userDetails.getAuthorities().isEmpty()) {
-            claims.put("role", userDetails.getAuthorities().iterator().next().getAuthority());
-        } else {
-            claims.put("role", "ROLE_USER");
-        }
-
-            /*
-                userDetails.getAuthorities() returns the list of roles or permissions assigned to the user.
-                .iterator().next() gets the first one (since many apps have only one role per user).
-                If the user has no role, it defaults to "ROLE_USER".
-                    Example:
-                    If the user is an admin → "ROLE_ADMIN"
-                    If no role is found → default "ROLE_USER"
-             */
+        claims.put(
+                "authorities",
+                userDetails.getAuthorities()
+                        .stream()
+                        .map(a -> a.getAuthority())
+                        .toList()
+        );
 
         return generateToken(claims, userDetails);
     }
@@ -148,7 +136,7 @@ public class JWTService {
         Uses the generic extractClaim method to get the expiration date.
      */
 
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
                 .setSigningKey(getSignInKey())

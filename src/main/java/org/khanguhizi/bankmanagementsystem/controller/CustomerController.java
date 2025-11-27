@@ -9,6 +9,7 @@ import org.khanguhizi.bankmanagementsystem.service.ResetPasswordService;
 import org.khanguhizi.bankmanagementsystem.service.UpdatePasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,7 +55,6 @@ public class CustomerController {
     @Operation(
             summary = "Forgot Password - Send OTP via SMS"
     )
-    @PreAuthorize("hasRole('UPDATE_CUSTOMER')")
     @PostMapping("/sendOTPBySMS")
     public ResponseEntity<org.khanguhizi.bankmanagementsystem.dto.ApiResponse> sendOTPBySMS(@RequestBody  ForgotPasswordRequest request) {
         var response = forgotPasswordService.sendOTPBySMS(request);
@@ -64,17 +64,21 @@ public class CustomerController {
     @Operation(
             summary = "Forgot Password - Send OTP via Email"
     )
-    @PreAuthorize("hasRole('UPDATE_CUSTOMER')")
-    @PostMapping("/sendOTPByEmail")
-    public ResponseEntity<org.khanguhizi.bankmanagementsystem.dto.ApiResponse> senOTPByEmail(@RequestBody  ForgotPasswordRequest request) {
+    @PostMapping(value = "/sendOTPByEmail", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse> sendOTPByEmail(
+            @RequestParam("email") String email
+    ) {
+        ForgotPasswordRequest request = new ForgotPasswordRequest();
+        request.setEmail(email);
+
         var response = forgotPasswordService.sendOTPByEmail(request);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
+
 
     @Operation(
             summary = "Reset Password - Verify OTP and update password"
     )
-    @PreAuthorize("hasRole('UPDATE_CUSTOMER')")
     @PostMapping("/resetPassword")
     public ResponseEntity<ApiResponse> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
         var response = resetPasswordService.resetPassword(resetPasswordRequest);
@@ -84,8 +88,7 @@ public class CustomerController {
     @Operation(
             summary = "Updates the user's password"
     )
-    @PreAuthorize("hasRole('UPDATE_CUSTOMER')")
-    @PostMapping("/updatePassword")
+// @PreAuthorize("hasRole('UPDATE_CUSTOMER')")    @PostMapping("/updatePassword")
     public ResponseEntity<ApiResponse> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest) {
         var response = updatePasswordService.updatePassword(updatePasswordRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);

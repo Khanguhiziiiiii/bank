@@ -1,23 +1,15 @@
 package org.khanguhizi.bankmanagementsystem.models;
 
 
-import lombok.Getter;
+import org.khanguhizi.bankmanagementsystem.dto.ProfileRoleRequest;
+import org.khanguhizi.bankmanagementsystem.service.ProfileRoleService;
 import org.springframework.security.core.GrantedAuthority;  //used to specify Roles
 import org.springframework.security.core.authority.SimpleGrantedAuthority; //implementation of GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-@Getter
-public class CustomUserDetails implements UserDetails {
-
-    private final Customer customer;
-
-    public CustomUserDetails(Customer customer) {
-        this.customer = customer;
-    }
+public record CustomUserDetails(Customer customer, ProfileRoleService profileRoleService) implements UserDetails {
 
     @Override
     public String getPassword() {
@@ -33,17 +25,26 @@ public class CustomUserDetails implements UserDetails {
         //This is the unique identifier that the login form uses.
     }
 
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        String profileName = customer.getProfile().getProfileName();
-//        var roles = new ArrayList<SimpleGrantedAuthority>();// e.g. "ADMIN"
-        return List.of(new SimpleGrantedAuthority("ROLE_" + profileName.toUpperCase()));
-        // now give me the roles under this user's profile
-//        var profiles = profileService.getRolesInProfile();
 
+        Profile profile = customer.getProfile();
+
+        ProfileRoleRequest request = new ProfileRoleRequest();
+        request.setProfileId(Long.valueOf(profile.getId()));
+
+        var response = profileRoleService.fetchRolesAssignedToAProfile(request);
+
+        List<ProfileRole> profileRoles = (List<ProfileRole>) response.getData();
+
+        return profileRoles.stream()
+                .map(pr -> pr.getRole().getRole())
+                .map(String::toUpperCase)
+                .map(r -> "ROLE_" + r)
+                .map(SimpleGrantedAuthority::new)
+                .toList();
     }
+
 
 
         /*
@@ -84,7 +85,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     //Provides access to the full Customer object.
-        //Useful if you need to retrieve more than just username/password (e.g., ID, email) later in the app.
+    //Useful if you need to retrieve more than just username/password (e.g., ID, email) later in the app.
 
 
 }

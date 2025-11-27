@@ -5,12 +5,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.khanguhizi.bankmanagementsystem.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -21,7 +26,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 
 @Configuration        //marks this as a Spring configuration class (Spring loads and runs it at startup).
-@EnableWebSecurity    //enables Spring Security’s web security support.
+@EnableMethodSecurity//enables Spring Security’s web security support.
 public class SecurityConfiguration {
 
     private final JWTAuthenticationFilter jwtAuthenticationFilter;
@@ -36,58 +41,58 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/login",
-                                "/register",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/index.html",
-                                "/resetPassword",
-                                "/sendOTPBySMS",
-                                "/sendOTPByEmail"
-                        ).permitAll()
-                        .requestMatchers(
-                                "/createAccountType",
-                                "/admin/**"
-                        ).hasAnyRole("ADMIN", "SUPERADMIN")
-                        .requestMatchers(
-                                "/withdraw",
-                                "/deposit",
-                                "/transferFunds",
-                                "/checkBalance",
-                                "/isOverdraftOptedIn"
-                        ).hasAnyRole("USER", "SUPERADMIN")
-                        .requestMatchers(
-                                "/superadmin/**"
-                        ).hasAnyRole("SUPERADMIN")
-                        // Any other request requires USER, ADMIN, or SUPERADMIN
-                        .anyRequest().hasAnyRole("USER", "ADMIN", "SUPERADMIN")
+                                .requestMatchers(
+                                        "/login",
+                                        "/register",
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/index.html",
+                                        "/resetPassword",
+                                        "/sendOTPBySMS",
+                                        "/sendOTPByEmail"
+                                ).permitAll()
+                                .anyRequest().authenticated()
+//                        .requestMatchers(
+//                                "/createAccountType",
+//                                "/admin/**"
+//                        ).hasAnyRole("ADMIN", "SUPERADMIN")
+//                        .requestMatchers(
+//                                "/withdraw",
+//                                "/deposit",
+//                                "/transferFunds",
+//                                "/checkBalance",
+//                                "/isOverdraftOptedIn"
+//                        ).hasAnyRole("USER", "SUPERADMIN")
+//                        .requestMatchers(
+//                                "/superadmin/**"
+//                        ).hasAnyRole("SUPERADMIN")
+//                        // Any other request requires USER, ADMIN, or SUPERADMIN
+//                        .anyRequest().hasAnyRole("USER", "ADMIN", "SUPERADMIN")
                 ) //all other requests require jwt authentication
-                .httpBasic(AbstractHttpConfigurer::disable)
-//                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(Customizer.withDefaults())
+                .formLogin(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ) //make sessions stateless
 
-                .authenticationProvider(authenticationProvider())
+//                .authenticationProvider(authenticationProvider())
 
 
-                .exceptionHandling(ex -> ex
-
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            response.setContentType("application/json");
-                            response.getWriter().write("{\"error\": \"Unauthorized: Invalid or missing token.\"}");
-                        })
-
-                        .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                            response.setContentType("application/json");
-                            response.getWriter().write("{\"error\": \"Forbidden: Insufficient permissions.\"}");
-                        })
-                )
+//                .exceptionHandling(ex -> ex
+//
+//                        .authenticationEntryPoint((request, response, authException) -> {
+//                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//                            response.setContentType("application/json");
+//                            response.getWriter().write("{\"error\": \"Unauthorized: Invalid or missing token.\"}");
+//                        })
+//
+//                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+//                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+//                            response.setContentType("application/json");
+//                            response.getWriter().write("{\"error\": \"Forbidden: Insufficient permissions.\"}");
+//                        })
 
 
                 .build();// Build and return the SecurityFilterChain
@@ -173,10 +178,8 @@ public class SecurityConfiguration {
      */
 
     @Bean
-    AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean

@@ -8,17 +8,20 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.khanguhizi.bankmanagementsystem.models.CustomUserDetails;
-
-@Service
 @RequiredArgsConstructor
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
+
     private final CustomerRepository customerRepository;
+    private final ProfileRoleService profileRoleService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         Customer customer = customerRepository.findByEmailOrUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        return new CustomUserDetails(customer);
+        return new CustomUserDetails(customer, profileRoleService);
     }
 }
+

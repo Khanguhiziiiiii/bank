@@ -31,8 +31,8 @@ public class ProfileRoleController {
     @Operation(
             summary = "creates profiles"
     )
-    @PreAuthorize("hasRole('CREATE_PROFILES')")
-    @PostMapping("/superadmin/createProfile")
+@PreAuthorize("hasRole('CREATE_PROFILES')")
+    @PostMapping("/createProfile")
     public ResponseEntity<ApiResponse> createProfile(@RequestBody ProfileRequest profileRequest) {
         var createProfileRes = profileService.createProfile(profileRequest);
         return new ResponseEntity<>(createProfileRes, HttpStatus.CREATED);
@@ -41,8 +41,8 @@ public class ProfileRoleController {
     @Operation(
             summary = "creates admins"
     )
-    @PreAuthorize("hasRole('CREATE_ADMIN')")
-    @PostMapping("/superadmin/createAdmin")
+@PreAuthorize("hasRole('CREATE_ADMIN')")
+    @PostMapping("/createAdmin")
     public ResponseEntity<ApiResponse> createAdmin(@RequestBody CreateAdminRequest request) {
         var createAdminRes = profileRoleService.createAdmin(request);
         return new ResponseEntity<>(createAdminRes, HttpStatus.CREATED);
@@ -51,8 +51,8 @@ public class ProfileRoleController {
     @Operation(
             summary = "Gets Profile roles"
     )
-    @PreAuthorize("hasRole('UPDATE_PROFILES')")
-    @GetMapping("/superadmin/profileRoles")
+@PreAuthorize("hasRole('UPDATE_PROFILES')")
+    @GetMapping("/profileRoles")
     public ResponseEntity<List<ProfileRoleResponse>> getAllProfileRoles() {
         var list = profileRoleService.getAllProfileRoles();
         return new ResponseEntity<>(list, HttpStatus.OK);
@@ -61,8 +61,8 @@ public class ProfileRoleController {
     @Operation(
             summary = "allows you to remove a role assigned to a profile"
     )
-    @PreAuthorize("hasRole('UPDATE_PROFILES')")
-    @PostMapping("/superadmin/removeRoleFromProfile")
+@PreAuthorize("hasRole('UPDATE_PROFILES')")
+    @PostMapping("/removeRoleFromProfile")
     public ResponseEntity<ApiResponse> removeRoleFromProfile(
             @RequestBody ProfileRoleRequest request) {
 
@@ -73,19 +73,19 @@ public class ProfileRoleController {
     @Operation(
             summary = "allows you to read assigned to profiles"
     )
-    @PreAuthorize("hasRole('READ_PROFILE')")
-    @PostMapping("/superadmin/fetchProfileRoles")
-    public ResponseEntity<ApiResponse> fetchProfileRoles(
+@PreAuthorize("hasRole('READ_PROFILE')")
+    @PostMapping("/fetchRolesAssignedToProfile")
+    public ResponseEntity<ApiResponse> fetchRolesAssignedToAProfile(
             @RequestBody ProfileRoleRequest request) {
 
-        ApiResponse response = profileRoleService.fetchProfileRoles(request);
+        ApiResponse response = profileRoleService.fetchRolesAssignedToAProfile(request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @Operation(
             summary = "Allows you to view all the roles in the system"
     )
-    @PreAuthorize("hasRole('READ_ROLES')")
-    @GetMapping("/superadmin/fetchRoles")
+@PreAuthorize("hasRole('READ_ROLES')")
+    @GetMapping("/fetchRoles")
     public ResponseEntity<ApiResponse> fetchRoles() {
         ApiResponse response = profileRoleService.fetchRoles();
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -94,8 +94,8 @@ public class ProfileRoleController {
     @Operation(
             summary = "Allows you to view the profiles in the system"
     )
-    @PreAuthorize("hasRole('READ_PROFILES')")
-    @GetMapping("/superadmin/fetchProfiles")
+@PreAuthorize("hasRole('READ_PROFILES')")
+    @GetMapping("/fetchProfiles")
     public ResponseEntity<ApiResponse> fetchProfiles() {
 
         ApiResponse response = profileRoleService.fetchProfiles();
@@ -105,8 +105,8 @@ public class ProfileRoleController {
     @Operation(
             summary = "Allows an admin to assign roles to profiles"
     )
-    @PreAuthorize("hasRole('UPDATE_PROFILES')")
-    @PostMapping("/superadmin/assignRolesToProfiles")
+@PreAuthorize("hasRole('UPDATE_PROFILES')")
+    @PostMapping("/assignRolesToProfiles")
     public ResponseEntity<ApiResponse> assignRolesToProfile(
             @RequestBody ProfileRoleRequest request) {
         var assignRolesRes = profileRoleService.assignRoleToProfile(request);
@@ -116,8 +116,8 @@ public class ProfileRoleController {
     @Operation(
             summary = "Allows an admin to create roles"
     )
-    @PreAuthorize("hasRole('CREATE_ROLES')")
-    @PostMapping("/superadmin/createRole")
+@PreAuthorize("hasRole('CREATE_ROLES')")
+    @PostMapping("/createRole")
     public ResponseEntity<ApiResponse> createRoles(
             @RequestBody RoleRequest request) {
         var createRolesRes = roleService.createRole(request);
@@ -127,8 +127,8 @@ public class ProfileRoleController {
     @Operation(
             summary = "Fetch profiles assigned to a given role"
     )
-    @PreAuthorize("hasRole('READ_ROLES')")
-    @GetMapping("/superadmin/roles/{roleId}/profiles")
+@PreAuthorize("hasRole('READ_ROLES')")
+    @GetMapping("/roles/{roleId}/profiles")
     public ResponseEntity<ApiResponse> getProfilesAssignedToRole(@PathVariable Long roleId) {
         ApiResponse response = profileRoleService.fetchProfilesAssignedToRole(roleId);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -138,7 +138,7 @@ public class ProfileRoleController {
             summary = "Deletes a role if not assigned to any profile"
     )
     @PreAuthorize("hasRole('DELETE_ROLES')")
-    @DeleteMapping("/superadmin/deleteRole/{roleId}")
+    @DeleteMapping("/deleteRole/{roleId}")
     public ResponseEntity<ApiResponse> deleteRole(@PathVariable Long roleId) {
         ApiResponse response = profileRoleService.deleteRole(roleId);
         return ResponseEntity.ok(response);
@@ -147,11 +147,21 @@ public class ProfileRoleController {
     @Operation(
             summary = "Deletes a profile if not used by any customer or role mapping"
     )
-    @PreAuthorize("hasRole('DELETE_PROFILES')")
-    @DeleteMapping("/superadmin/deleteProfile/{profileId}")
+@PreAuthorize("hasRole('DELETE_PROFILES')")
+    @DeleteMapping("/deleteProfile/{profileId}")
     public ResponseEntity<ApiResponse> deleteProfile(@PathVariable Long profileId) {
         ApiResponse response = profileRoleService.deleteProfile(profileId);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Assign profile to user"
+    )
+ @PreAuthorize("hasRole('UPDATE_CUSTOMER')")
+ @PostMapping("/assignProfileToUser")
+    public ResponseEntity<ApiResponse> assignProfileToUser(@RequestBody ProfileRequest request){
+        var assignRes = profileService.assignProfileToUser(request);
+        return new ResponseEntity<>(assignRes, HttpStatus.OK);
     }
 
 }
