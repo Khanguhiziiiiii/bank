@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "Profile_Roles")
+@Table(name = "Profile_Roles", uniqueConstraints = @UniqueConstraint(columnNames = {"profile_id", "role_id"}))
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+
 @Builder
 public class ProfileRole {
     @Id
