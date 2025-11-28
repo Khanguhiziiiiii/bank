@@ -34,7 +34,8 @@ public class AdminDashboardController {
     @Operation(
             summary = "Fetches details of a customer"
     )
-// @PreAuthorize("hasRole('READ_CUSTOMER')")    @GetMapping("/admin/fetchAllUsers")
+@PreAuthorize("hasRole('READ_CUSTOMER')")
+    @GetMapping("/admin/fetchAllUsers")
     public ResponseEntity<ApiResponse> getAllUsers(
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
@@ -47,7 +48,8 @@ public class AdminDashboardController {
     @Operation(
             summary = "Update details of a user"
     )
-// @PreAuthorize("hasRole('UPDATE_CUSTOMER')")    @PutMapping("/admin/updateUser/{id}")
+@PreAuthorize("hasRole('UPDATE_CUSTOMER')")
+    @PutMapping("/admin/updateUser/{id}")
     public ResponseEntity<ApiResponse> updateUser(
             @PathVariable Integer id,
             @RequestBody Customer updatedData
@@ -59,7 +61,8 @@ public class AdminDashboardController {
     @Operation(
             summary = "Soft deletes a user"
     )
-// @PreAuthorize("hasRole('DELETE_CUSTOMER')")    @DeleteMapping("/admin/deleteUser/{id}")
+@PreAuthorize("hasRole('DELETE_CUSTOMER')")
+    @DeleteMapping("/admin/deleteUser/{id}")
     public ResponseEntity<ApiResponse> softDeleteUser(@PathVariable Integer id) {
         ApiResponse response = adminDashboardService.softDeleteUser(id);
         return ResponseEntity.ok(response);
@@ -68,7 +71,8 @@ public class AdminDashboardController {
     @Operation(
             summary = ("Blocks a customer")
     )
-// @PreAuthorize("hasRole('UPDATE_CUSTOMER')")    @PatchMapping("/admin/blockUser/{id}")
+@PreAuthorize("hasRole('UPDATE_CUSTOMER')")
+    @PatchMapping("/admin/blockUser/{id}")
     public ResponseEntity<ApiResponse> toggleBlockUser(
             @PathVariable Integer id,
             @RequestParam boolean block
@@ -81,7 +85,8 @@ public class AdminDashboardController {
             summary = "Fetches all transactions in a database.",
             description = "Can be filtered by transaction type and customer Id"
     )
-// @PreAuthorize("hasRole('READ_TRANSACTION')")    @GetMapping ("/fetchTransactions")
+@PreAuthorize("hasRole('READ_TRANSACTION')")
+    @GetMapping ("/fetchTransactions")
     public ResponseEntity<ApiResponse> getAllTransactions(
             @RequestParam(required = false) String type,
             @RequestParam(required = false) Integer customerId
@@ -93,7 +98,8 @@ public class AdminDashboardController {
     @Operation(
             summary = "fetches the details about a transaction"
     )
-// @PreAuthorize("hasRole('READ_TRANSACTION')")    @GetMapping("/transaction{transactionCode}details")
+@PreAuthorize("hasRole('READ_TRANSACTION')")
+    @GetMapping("/transaction{transactionCode}details")
     public ResponseEntity<ApiResponse> getTransactionDetails(
             @PathVariable String transactionCode
     ) {

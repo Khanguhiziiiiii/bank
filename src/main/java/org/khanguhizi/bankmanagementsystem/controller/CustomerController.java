@@ -88,7 +88,8 @@ public class CustomerController {
     @Operation(
             summary = "Updates the user's password"
     )
-// @PreAuthorize("hasRole('UPDATE_CUSTOMER')")    @PostMapping("/updatePassword")
+@PreAuthorize("hasRole('UPDATE_CUSTOMER')")
+    @PostMapping("/updatePassword")
     public ResponseEntity<ApiResponse> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest) {
         var response = updatePasswordService.updatePassword(updatePasswordRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
