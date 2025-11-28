@@ -95,6 +95,33 @@ public class SecurityConfiguration {
 //                        })
 
 
+                .exceptionHandling(ex -> ex
+
+                        // 401 – invalid/missing token
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.getWriter().write("""
+                                {
+                                    "error": "Unauthorized",
+                                    "message": "Invalid or missing token"
+                                }
+                                """);
+                        })
+
+                        // 403 – user has token but NOT enough ROLE/AUTHORITY
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType("application/json");
+                            response.getWriter().write("""
+                                {
+                                    "error": "Forbidden",
+                                    "message": "You do not have the required permissions"
+                                }
+                                """);
+                        })
+                )
+
                 .build();// Build and return the SecurityFilterChain
     }
 

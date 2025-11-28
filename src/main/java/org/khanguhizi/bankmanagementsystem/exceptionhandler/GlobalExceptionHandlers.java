@@ -119,12 +119,25 @@ public class GlobalExceptionHandlers {
         return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
 
-//    @ExceptionHandler(InvalidAccessException.class)
+    @ExceptionHandler(InvalidAccessException.class)
     public ResponseEntity<ApiResponse> handleInvalidAccessException(InvalidAccessException invalidAccessException) {
         ApiResponse  response = ApiResponse.builder()
-                .status(String.valueOf(HttpStatus.UNAUTHORIZED))
+                .status(String.valueOf(HttpStatus.FORBIDDEN))
                 .message(invalidAccessException.getMessage())
                 .build();
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
+
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity<ApiResponse> handleAccessDenied(org.springframework.security.access.AccessDeniedException ex) {
+        ApiResponse response = ApiResponse.builder()
+                .status(String.valueOf(HttpStatus.FORBIDDEN))
+                .message("You do not have permission to access this resource")
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
+
+
+
 }

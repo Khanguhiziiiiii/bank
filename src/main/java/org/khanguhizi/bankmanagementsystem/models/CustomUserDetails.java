@@ -1,15 +1,27 @@
 package org.khanguhizi.bankmanagementsystem.models;
 
 
+import lombok.Getter;
 import org.khanguhizi.bankmanagementsystem.dto.ProfileRoleRequest;
 import org.khanguhizi.bankmanagementsystem.service.ProfileRoleService;
+import org.khanguhizi.bankmanagementsystem.service.ProfileService;
 import org.springframework.security.core.GrantedAuthority;  //used to specify Roles
 import org.springframework.security.core.authority.SimpleGrantedAuthority; //implementation of GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
+@Getter
+public class CustomUserDetails implements UserDetails {
 
-public record CustomUserDetails(Customer customer, ProfileRoleService profileRoleService) implements UserDetails {
+    private final Customer customer;
+    private final ProfileRoleService profileRoleService;
+
+    public CustomUserDetails(Customer customer, ProfileRoleService profileRoleService) {
+        this.customer = customer;
+        this.profileRoleService = profileRoleService;
+    }
 
     @Override
     public String getPassword() {
@@ -85,7 +97,7 @@ public record CustomUserDetails(Customer customer, ProfileRoleService profileRol
     }
 
     //Provides access to the full Customer object.
-    //Useful if you need to retrieve more than just username/password (e.g., ID, email) later in the app.
+        //Useful if you need to retrieve more than just username/password (e.g., ID, email) later in the app.
 
 
 }

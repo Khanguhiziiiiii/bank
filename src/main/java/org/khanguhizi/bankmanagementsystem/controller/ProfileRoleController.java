@@ -73,7 +73,7 @@ public class ProfileRoleController {
     @Operation(
             summary = "allows you to read assigned to profiles"
     )
-@PreAuthorize("hasRole('READ_PROFILE')")
+@PreAuthorize("hasRole('READ_PROFILES')")
     @PostMapping("/fetchRolesAssignedToProfile")
     public ResponseEntity<ApiResponse> fetchRolesAssignedToAProfile(
             @RequestBody ProfileRoleRequest request) {
@@ -128,7 +128,7 @@ public class ProfileRoleController {
             summary = "Fetch profiles assigned to a given role"
     )
 @PreAuthorize("hasRole('READ_ROLES')")
-    @GetMapping("/roles/{roleId}/profiles")
+    @GetMapping("/role{roleId}/profiles")
     public ResponseEntity<ApiResponse> getProfilesAssignedToRole(@PathVariable Long roleId) {
         ApiResponse response = profileRoleService.fetchProfilesAssignedToRole(roleId);
         return new ResponseEntity<>(response, HttpStatus.OK);
