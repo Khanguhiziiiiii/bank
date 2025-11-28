@@ -44,7 +44,7 @@ public class SystemStartupConfiguration {
 
             List<Role> allRoles = RoleData.getRoles();
             for (Role role : allRoles) {
-                if (!roleRepository.existsById(Long.valueOf(role.getId()))) {
+                if (!roleRepository.existsByRole(role.getRole())) {
                     roleRepository.save(role);
                 }
             }
@@ -89,36 +89,36 @@ public class SystemStartupConfiguration {
     public class RoleData {
         public static List<Role> getRoles() {
             return Arrays.asList(
-                    new Role(1, "CREATE_ACCOUNT"),
-                    new Role(2, "READ_ACCOUNT"),
-                    new Role(3, "DELETE_ACCOUNT"),
-                    new Role(4, "UPDATE_ACCOUNT"),
-                    new Role(5, "CREATE_CUSTOMER"),
-                    new Role(6, "READ_CUSTOMER"),
-                    new Role(7, "DELETE_CUSTOMER"),
-                    new Role(8, "UPDATE_CUSTOMER"),
-                    new Role(9, "CREATE_ADMIN"),
-                    new Role(10, "READ_ADMIN"),
-                    new Role(11, "DELETE_ADMIN"),
-                    new Role(12, "UPDATE_ADMIN"),
-                    new Role(13, "CREATE_ACCOUNT_TYPES"),
-                    new Role(14, "READ_ACCOUNT_TYPES"),
-                    new Role(15, "DELETE_ACCOUNT_TYPES"),
-                    new Role(16, "UPDATE_ACCOUNT_TYPES"),
-                    new Role(17, "UPDATE_TRANSACTION_COSTS"),
-                    new Role(18, "READ_TRANSACTION_COSTS"),
-                    new Role(19, "CREATE_ROLES"),
-                    new Role(20, "UPDATE_ROLES"),
-                    new Role(21, "READ_ROLES"),
-                    new Role(22, "DELETE_ROLES"),
-                    new Role(23, "CREATE_PROFILES"),
-                    new Role(24, "UPDATE_PROFILES"),
-                    new Role(25, "DELETE_PROFILES"),
-                    new Role(26, "READ_PROFILES"),
-                    new Role(27, "READ_TRANSACTION_COSTS"),
-                    new Role(28, "READ_ACCOUNT_TYPES"),
-                    new Role(29, "CREATE_TRANSACTION"),
-                    new Role(30, "READ_TRANSACTION")
+                    new Role("CREATE_ACCOUNT"),
+                    new Role("READ_ACCOUNT"),
+                    new Role("DELETE_ACCOUNT"),
+                    new Role("UPDATE_ACCOUNT"),
+                    new Role("CREATE_CUSTOMER"),
+                    new Role("READ_CUSTOMER"),
+                    new Role("DELETE_CUSTOMER"),
+                    new Role("UPDATE_CUSTOMER"),
+                    new Role("CREATE_ADMIN"),
+                    new Role("READ_ADMIN"),
+                    new Role("DELETE_ADMIN"),
+                    new Role("UPDATE_ADMIN"),
+                    new Role("CREATE_ACCOUNT_TYPES"),
+                    new Role("READ_ACCOUNT_TYPES"),
+                    new Role("DELETE_ACCOUNT_TYPES"),
+                    new Role("UPDATE_ACCOUNT_TYPES"),
+                    new Role("UPDATE_TRANSACTION_COSTS"),
+                    new Role("READ_TRANSACTION_COSTS"),
+                    new Role("CREATE_ROLES"),
+                    new Role("UPDATE_ROLES"),
+                    new Role("READ_ROLES"),
+                    new Role("DELETE_ROLES"),
+                    new Role("CREATE_PROFILES"),
+                    new Role("UPDATE_PROFILES"),
+                    new Role("DELETE_PROFILES"),
+                    new Role("READ_PROFILES"),
+                    new Role("READ_TRANSACTION_COSTS"),
+                    new Role("READ_ACCOUNT_TYPES"),
+                    new Role("CREATE_TRANSACTION"),
+                    new Role("READ_TRANSACTION")
             );
         }
     }
